@@ -1,0 +1,2 @@
+class HolodilnicSensorsData < ApplicationRecord
+end

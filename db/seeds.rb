@@ -5,3 +5,10 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+HolodilnicSensorsData.create(
+  humidity_top: 45.6,
+  temperature_top_c: 22.5,
+  humidity_bottom: 47.2,
+  temperature_bottom_c: 21.8
+)
