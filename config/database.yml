@@ -1,0 +1,23 @@
+default: &default
+  username: <%= Rails.application.credentials.database[:development][:username] %>
+  password: <%= Rails.application.credentials.database[:development][:password] %>
+  host: "127.0.0.1"
+  adapter: postgresql
+  encoding: utf8
+  pool: 30
+  port: <%= ENV["DB_PORT"] || 5432 %>
+
+development: &development
+  <<: *default
+  database: "house_development"
+
+test:
+  <<: *default
+  database: "house_test"
+
+production:
+  <<: *default
+  host: <%= Rails.application.credentials.database[:production][:host] %>
+  database: "house_production"
+  username: <%= Rails.application.credentials.database[:production][:username] %>
+  password: <%= Rails.application.credentials.database[:production][:password] %>
