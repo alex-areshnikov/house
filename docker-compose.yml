@@ -1,0 +1,17 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: house_production
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+  mqtt:
+    build: .
+    depends_on:
+      - db
+volumes:
+  postgres-data:
