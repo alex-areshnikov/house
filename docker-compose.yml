@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   db:
     image: postgres
@@ -13,5 +14,13 @@ services:
     image: sanchorubyroid/house:latest
     depends_on:
       - db
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    ports:
+      - "4000:3000"
+
 volumes:
   postgres-data:
+  grafana-storage:
