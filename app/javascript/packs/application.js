@@ -7,6 +7,12 @@ require("@rails/ujs").start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
+require('jquery')
+
+require("startbootstrap-sb-admin-2/vendor/fontawesome-free/js/all.min")
+import "startbootstrap-sb-admin-2/vendor/fontawesome-free/css/all.min.css"
+
+import "startbootstrap-sb-admin-2/css/sb-admin-2.min.css"
 
 
 // Uncomment to copy all static images under ../images to the output folder and reference

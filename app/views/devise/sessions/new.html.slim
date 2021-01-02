@@ -1,0 +1,27 @@
+.row.justify-content-center
+  .col-lg-6.col-md-9
+    .card.o-hidden.border-0.shadow-lg.my-5
+      card-body.p-0
+        .row
+          .col-lg-12
+            .p-5
+              .text-center
+                h1.h4.text-gray-900.mb-4
+                  | Welcome Back!
+              = form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "user" }) do |f|
+                .form-group
+                  = f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Enter Email Address...",
+                          id: "exampleInputEmail", class: "form-control form-control-user", aria: { describedby: "emailHelp" }
+                .form-group
+                  = f.password_field :password, autocomplete: "current-password", placeholder: "Password",
+                          id: "exampleInputPassword", class: "form-control form-control-user"
+                - if devise_mapping.rememberable?
+                  .form-group
+                    .custom-control.custom-checkbox.small
+                      = f.check_box :remember_me, class: "custom-control-input"
+                      = f.label :remember_me, class: "custom-control-label"
+                .actions
+                  = f.submit "Log in", class: "btn btn-primary btn-user btn-block"
+              hr
+              .text-center.small
+                = render "devise/shared/links"
