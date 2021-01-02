@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.1'
+ruby '3.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
+gem 'rails', '~> 6.1.0'
 # Use Puma as the app server
 gem 'puma', '~> 4.1'
 # Use SCSS for stylesheets
@@ -57,3 +57,9 @@ gem "pg", "~> 1.2"
 gem "mqtt", "~> 0.5.0"
 
 gem "factory_bot_rails", "~> 6.1"
+
+gem "slim", "~> 4.1"
+
+gem "devise", "~> 4.7"
+
+gem "letter_opener", "~> 1.7"

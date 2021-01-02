@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title House
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
+
+  body
+    = content_tag :p, notice, class: "alert alert-info" if notice.present?
+    = content_tag :p, alert, class: "alert alert-danger" if alert.present?
+
+    = link_to "Logout", destroy_user_session_path, method: :delete if user_signed_in?
+
+    = yield
