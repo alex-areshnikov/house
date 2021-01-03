@@ -1,0 +1,13 @@
+h1 Add Lot
+
+.row
+  .col-12.col-md-9.col-lg-6
+    .card.shadow
+      .card-body
+        = simple_form_for @lot, url: copart_lots_path do |f|
+          = f.error_notification
+
+          = f.input :lot_number
+
+          = f.button :submit, class: "btn btn-primary mr-2"
+          = link_to "Back", copart_lots_path, class: "btn btn-outline-secondary"

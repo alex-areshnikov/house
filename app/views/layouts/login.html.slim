@@ -1,0 +1,12 @@
+doctype html
+html
+  = render "layouts/head"
+
+  body.bg-gradient-primary
+    .container
+      = content_tag :p, notice, class: "mt-5 alert alert-info" if notice.present?
+      = content_tag :p, alert, class: "mt-5 alert alert-danger" if alert.present?
+
+      = yield
+
+  = javascript_pack_tag 'application_bottom', 'data-turbolinks-track': 'reload'

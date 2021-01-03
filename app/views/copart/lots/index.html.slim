@@ -1,0 +1,16 @@
+.d-flex.justify-content-end.mb-2
+  h1.flex-grow-1 Copart
+  = link_to new_copart_lot_path, class: "btn btn-primary btn-circle btn-lg" do
+    i.fas.fa-plus
+
+.row
+  - @lots.each do |lot|
+    .col-12
+      .card.shadow.mb-2
+        .card-body
+          .d-flex
+            h5.card-title.flex-grow-1
+              = lot.lot_number
+            = link_to copart_lot_path(lot), method: :delete, data: { confirm: "Are you sure?" } do
+              i.fas.fa-trash
+          | Card Body

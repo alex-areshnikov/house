@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
+  layout "login"
+
   # before_action :configure_sign_in_params, only: [:create]
 
   # GET /resource/sign_in
-  def new
-    @body_class = "bg-gradient-primary"
-
-    super
-  end
+  # def new
+  #   super
+  # end
 
   # POST /resource/sign_in
   # def create

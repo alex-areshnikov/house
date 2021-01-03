@@ -63,3 +63,5 @@ gem "slim", "~> 4.1"
 gem "devise", "~> 4.7"
 
 gem "letter_opener", "~> 1.7"
+
+gem "simple_form", "~> 5.0"
