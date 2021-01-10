@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd /house
+cd /var/www/house
 
 # Run migrations
 bundle exec rake db:migrate RAILS_ENV=production
