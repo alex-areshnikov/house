@@ -7,13 +7,14 @@ WORKDIR /house
 
 COPY Gemfile /house/Gemfile
 COPY Gemfile.lock /house/Gemfile.lock
-RUN bundle install
+RUN bundle check || bundle install
 
 RUN apt-get update -qq && apt-get install -y nodejs
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
 COPY . /house
 RUN yarn install --check-files
+RUN bundle exec rails assets:precompile
 
 # Add a script to be executed every time the container starts.
 COPY entrypoint.sh /usr/bin/
