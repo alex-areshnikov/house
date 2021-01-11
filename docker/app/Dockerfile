@@ -22,9 +22,10 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
 RUN yarn install --check-files
 
+ENV RAILS_ENV="production"
 RUN bundle exec rails assets:precompile
 
-COPY . .
+COPY public public/
 
 EXPOSE 3000
 
