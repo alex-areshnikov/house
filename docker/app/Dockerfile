@@ -12,7 +12,7 @@ WORKDIR $RAILS_ROOT
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 
-RUN bundle install --jobs 5 --without development test
+RUN bundle install --without development test
 
 # Copy project
 COPY . .
@@ -22,7 +22,6 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
 RUN yarn install --check-files
 
-ENV RAILS_ENV="production"
 RUN bundle exec rails assets:precompile
 
 COPY public public/

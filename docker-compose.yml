@@ -14,12 +14,16 @@ services:
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
+    volumes:
+      - public-folder:/var/www/house/public
     depends_on:
       - db
   web:
     build:
       context: .
       dockerfile: ./docker/web/Dockerfile
+    volumes:
+      - public-folder:/var/www/house/public
     depends_on:
       - app
     ports:
@@ -33,5 +37,5 @@ services:
 
 volumes:
   postgres-data:
-  apps_root:
+  public-folder:
 #  grafana-storage:
