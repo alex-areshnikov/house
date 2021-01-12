@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    aasm (5.1.1)
+      concurrent-ruby (~> 1.0)
     actioncable (6.1.0)
       actionpack (= 6.1.0)
       activesupport (= 6.1.0)
@@ -62,6 +64,8 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    after_commit_everywhere (0.1.5)
+      activerecord (>= 4.2)
     bcrypt (3.1.16)
     bcrypt (3.1.16-java)
     bindex (0.8.1)
@@ -268,6 +272,8 @@ PLATFORMS
   x86-mswin32
 
 DEPENDENCIES
+  aasm (~> 5.1)
+  after_commit_everywhere (~> 0.1.5)
   bootsnap (>= 1.4.2)
   byebug
   capybara (>= 2.15)

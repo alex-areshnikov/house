@@ -65,3 +65,7 @@ gem "devise", "~> 4.7"
 gem "letter_opener", "~> 1.7"
 
 gem "simple_form", "~> 5.0"
+
+gem "aasm", "~> 5.1"
+
+gem "after_commit_everywhere", "~> 0.1.5"
