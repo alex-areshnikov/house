@@ -28,6 +28,10 @@ services:
       - app
     ports:
       - 80:80
+  redis:
+    image: redis
+    restart: always
+
 #  grafana:
 #    image: grafana/grafana
 #    volumes:

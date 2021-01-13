@@ -69,3 +69,5 @@ gem "simple_form", "~> 5.0"
 gem "aasm", "~> 5.1"
 
 gem "after_commit_everywhere", "~> 0.1.5"
+
+gem "redis", "~> 4.2"
