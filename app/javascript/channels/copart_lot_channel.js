@@ -3,7 +3,7 @@ import consumer from "./consumer"
 const chatChannel = consumer.subscriptions.create("CopartLotChannel", {
   connected() {
     console.log("Connected...")
-    chatChannel.send({ sent_by: "Paul", body: "This is a cool chat app." })
+    // chatChannel.send({ sent_by: "Paul", body: "This is a cool chat app." })
   },
 
   disconnected() {

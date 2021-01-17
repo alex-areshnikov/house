@@ -13,4 +13,19 @@
               = lot.lot_number
             = link_to copart_lot_path(lot), method: :delete, data: { confirm: "Are you sure?" } do
               i.fas.fa-trash
-          | Card Body
+          .row
+            .col-3
+              label Name
+            .col-9 #{lot.name}
+          .row
+            .col-3
+              label VIN
+            .col-9 #{lot.vin}
+          .row
+            .col-3
+              label Primary Damage
+            .col-9 #{lot.primary_damage}
+          .row
+            .col-3
+              label Secondary Damage
+            .col-9 #{lot.secondary_damage}
