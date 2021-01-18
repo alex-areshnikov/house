@@ -19,7 +19,7 @@ export default class LotScanner {
   }
 
   scan = async () => {
-    console.log(`Scanning ${this.url}...`)
+    console.log(`Scanning ${this.url}`)
 
     puppeteer.launch({ headless: true, args: ['--no-sandbox'] }).then(async browser => {
       const page = await browser.newPage()
@@ -39,17 +39,32 @@ export default class LotScanner {
     let data = { lot_number: this.lot_number };
 
     for(const field of lotFields) {
-      await page
-        .waitForSelector(field.selector, { timeout: 5000 })
-        .then(async (element) => {
-          let elementText = await page.evaluate(el => el.textContent, element);
-          data[field.name] = elementText.trim();
-          console.log(`${field.name}: ${elementText.trim()}`)
-          // await element.screenshot({path: `${field.name}.png`})
-        })
-        .catch(() => console.log(`error ${field.name}`))
+       data[field.name] = await this.processField(page, field, false);
+       console.log(`${field.name}: ${data[field.name]}`)
     }
 
     return data;
+  }
+
+  processField = async (page, field, reloaded) => {
+    let fieldValue = "";
+
+    await page
+      .waitForSelector(field.selector, { timeout: reloaded ? 20000 : 5000 })
+      .then(async (element) => {
+        let elementText = await page.evaluate(el => el.textContent, element);
+        fieldValue = elementText.trim();
+      })
+      .catch(async () => {
+        console.log(`error ${field.name}`)
+
+        if(reloaded) { await page.screenshot({path: `screenshots/${Date.now()}_error_${field.name}.png`}) }
+        else {
+          await page.reload({ waitUntil: "load" });
+          fieldValue = await this.processField(page, field, true)
+        }
+      })
+
+    return fieldValue;
   }
 }
