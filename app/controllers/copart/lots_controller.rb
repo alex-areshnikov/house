@@ -19,8 +19,7 @@ module Copart
     end
 
     def destroy
-      kiwi = CopartLot.find(params[:id])
-      kiwi.destroy
+      CopartLot.find(params[:id]).destroy
       redirect_to copart_lots_path
     end
 

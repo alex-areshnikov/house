@@ -2,6 +2,7 @@ FROM ruby:3.0.0
 
 ENV RAILS_ROOT /var/www/house
 ENV PATH /root/.yarn/bin:$PATH
+ENV RAILS_ENV production
 
 RUN mkdir -p $RAILS_ROOT
 
@@ -13,22 +14,34 @@ COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 
 RUN gem install bundler -v2.2.4
-
 RUN bundle config set --local without "development test"
 RUN bundle install
 
-# Copy project
-COPY . .
+RUN apt-get update \
+    && apt-get install -y wget gnupg \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
+      --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update -qq && apt-get install -y nodejs
+RUN apt-get update -yq && apt-get upgrade -yq
+RUN apt-get install -yq curl
+
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
+RUN apt-get install -yq nodejs build-essential
+
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
-RUN yarn install --check-files
+COPY package.json package.json
+COPY yarn.lock yarn.lock
+RUN yarn install
 
-ENV RAILS_ENV=production
-RUN bundle exec rails assets:precompile
+RUN mkdir -p tmp/pids
 
-COPY public public/
+# Copy project
+COPY . .
 
 EXPOSE 3000
 
