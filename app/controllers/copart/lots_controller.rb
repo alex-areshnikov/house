@@ -11,7 +11,7 @@ module Copart
     def create
       @lot = CopartLot.new(copart_lot_params)
       if @lot.save
-        ::Copart::ScannerExecutor.new(@lot.lot_number).call
+        ::Copart::ScanLotJob.perform_later(@lot.lot_number)
         redirect_to copart_lots_path
       else
         render "new"

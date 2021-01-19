@@ -1,0 +1,6 @@
+:concurrency: 1
+:logfile: ./log/sidekiq.log
+:queues:
+  - default
+  - house_app_development_default
+  - house_app_production_default
