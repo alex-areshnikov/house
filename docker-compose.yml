@@ -24,6 +24,7 @@ services:
       DOCKERIZED: "true"
       REDIS_URL: redis://redis:6379/1
       RAILS_LOG_TO_STDOUT: "true"
+      APP_CONTAINER: "true"
 
   web:
     build:
@@ -39,6 +40,19 @@ services:
   redis:
     image: redis
     restart: always
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    depends_on:
+      - db
+      - redis
+    environment:
+      DOCKERIZED: "true"
+      REDIS_URL: redis://redis:6379/1
+      RAILS_LOG_TO_STDOUT: "true"
+      SIDEKIQ_CONTAINER: "true"
 
 #  grafana:
 #    image: grafana/grafana
