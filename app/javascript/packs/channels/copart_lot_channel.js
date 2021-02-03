@@ -1,7 +1,9 @@
-import consumer from "./consumer"
-import * as ActionCable from '@rails/actioncable'
+// import * as ActionCable from '@rails/actioncable'
+import { createConsumer } from "@rails/actioncable"
 
-ActionCable.logger.enabled = true
+const consumer = createConsumer()
+
+// ActionCable.logger.enabled = true
 
 const copartLotChannel = consumer.subscriptions.create("CopartLotChannel", {
   connected() {

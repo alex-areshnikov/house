@@ -1,5 +1,11 @@
 module Copart
   class LotsController < ::Copart::ApplicationController
+    before_action :enable_copart_lot_channel, only: :index
+
+    def enable_copart_lot_channel
+      enable_channel(:copart_lot)
+    end
+
     def index
       @lots = CopartLot.all
     end
