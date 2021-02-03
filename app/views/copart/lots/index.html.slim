@@ -10,7 +10,7 @@
         .card-body
           .d-flex
             h5.card-title.flex-grow-1
-              = lot.lot_number
+              = link_to lot.lot_number, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank"
             = link_to copart_lot_path(lot), method: :delete, data: { confirm: "Are you sure?" } do
               i.fas.fa-trash
           .row
@@ -29,3 +29,7 @@
             .col-3
               label Secondary Damage
             .col-9 #{lot.secondary_damage}
+          .row
+            .col-3
+              label Sale Date
+            .col-9 #{lot.sale_date}
