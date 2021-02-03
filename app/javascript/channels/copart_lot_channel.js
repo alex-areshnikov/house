@@ -1,9 +1,12 @@
 import consumer from "./consumer"
+import * as ActionCable from '@rails/actioncable'
 
-const chatChannel = consumer.subscriptions.create("CopartLotChannel", {
+ActionCable.logger.enabled = true
+
+const copartLotChannel = consumer.subscriptions.create("CopartLotChannel", {
   connected() {
     console.log("Connected...")
-    // chatChannel.send({ sent_by: "Paul", body: "This is a cool chat app." })
+    // copartLotChannel.send({ sent_by: "Paul", body: "This is a cool chat app." })
   },
 
   disconnected() {
@@ -11,7 +14,9 @@ const chatChannel = consumer.subscriptions.create("CopartLotChannel", {
   },
 
   received(data) {
-    console.log("Rcvd:" + data.body)
+    console.log("Rcvd:" + JSON.stringify(data))
+    if(data.client_command === "reload") window.location.reload()
+    else copartLotChannel.send(data)
   }
 });
 

@@ -1,37 +1,29 @@
 import puppeteer from "puppeteer-extra"
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
-import redis from "redis"
-
+import HouseRedisClient from "./HouseRedisClient.js"
 import lotFields from "./lotFields.js"
 
 puppeteer.use(StealthPlugin())
 
-const redis_config = {
-  host: (process.env.DOCKERIZED ? "redis" : "127.0.0.1" )
-}
-
 export default class LotScanner {
   constructor(lot_number) {
+    this.redis_client = new HouseRedisClient("lot_scanner");
     this.lot_number = lot_number;
     this.url = `https://www.copart.com/lot/${lot_number}`;
-    this.pub_channel = "copart_lot_channel";
-    this.redis_client = redis.createClient(redis_config);
   }
 
   scan = async () => {
     console.log(`Scanning ${this.url}`)
 
-    puppeteer.launch({ headless: true, args: ['--no-sandbox'] }).then(async browser => {
-      const page = await browser.newPage()
-      await page.setViewport({ width: 1920, height: 1080 });
-      await page.goto(this.url, { waitUntil: "load" })
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+    const page = await browser.newPage()
+    await page.setViewport({ width: 1920, height: 1080 });
+    await page.goto(this.url, { waitUntil: "load" })
 
-      const data = await this.collectData(page);
-      await this.redis_client.publish(this.pub_channel, JSON.stringify(data));
-      await this.redis_client.quit();
+    const data = await this.collectData(page);
+    await this.redis_client.publish(data);
 
-      await browser.close()
-    })
+    await browser.close()
   }
 
   // private

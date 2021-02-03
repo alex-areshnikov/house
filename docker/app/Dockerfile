@@ -1,4 +1,4 @@
-FROM ruby:3.0.0
+FROM ruby:2.7.2
 
 ENV RAILS_ROOT /var/www/house
 ENV PATH /root/.yarn/bin:$PATH
