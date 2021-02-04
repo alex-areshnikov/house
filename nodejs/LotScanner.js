@@ -1,13 +1,13 @@
 import puppeteer from "puppeteer-extra"
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
-import HouseRedisClient from "./HouseRedisClient.js"
+import HouseApiClient from "./HouseApiClient.js"
 import lotFields from "./lotFields.js"
 
 puppeteer.use(StealthPlugin())
 
 export default class LotScanner {
   constructor(lot_number) {
-    this.redis_client = new HouseRedisClient("lot_scanner");
+    this.api_client = new HouseApiClient("lot_scanner");
     this.lot_number = lot_number;
     this.url = `https://www.copart.com/lot/${lot_number}`;
   }
@@ -21,7 +21,7 @@ export default class LotScanner {
     await page.goto(this.url, { waitUntil: "load" })
 
     const data = await this.collectData(page);
-    await this.redis_client.publish(data);
+    await this.api_client.send(data);
 
     await browser.close()
   }

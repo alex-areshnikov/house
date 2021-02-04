@@ -7,7 +7,7 @@ const consumer = createConsumer()
 
 const copartLotChannel = consumer.subscriptions.create("CopartLotChannel", {
   connected() {
-    console.log("Connected...")
+    // console.log("Connected...")
     // copartLotChannel.send({ sent_by: "Paul", body: "This is a cool chat app." })
   },
 
@@ -16,9 +16,7 @@ const copartLotChannel = consumer.subscriptions.create("CopartLotChannel", {
   },
 
   received(data) {
-    console.log("Rcvd:" + JSON.stringify(data))
     if(data.client_command === "reload") window.location.reload()
-    else copartLotChannel.send(data)
   }
 });
 

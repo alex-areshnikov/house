@@ -15,4 +15,10 @@ Rails.application.routes.draw do
   namespace :copart do
     resources :lots, only: %i[index create new destroy]
   end
+
+  namespace :api do
+    namespace :copart do
+      resource :receiver, only: %i(create)
+    end
+  end
 end
