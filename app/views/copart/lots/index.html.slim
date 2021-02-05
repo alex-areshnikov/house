@@ -10,13 +10,17 @@
         .card-body
           .d-flex
             h5.card-title.flex-grow-1
-              = link_to lot.lot_number, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank"
+              = "Lot #{lot.lot_number}"
+            span.pr-1
+              = link_to copart_scanner_path(lot.lot_number), data: { confirm: "Are you sure?" } do
+                i.fas.fa-undo
             = link_to copart_lot_path(lot), method: :delete, data: { confirm: "Are you sure?" } do
               i.fas.fa-trash
           .row
             .col-3
               label Name
-            .col-9 #{lot.name}
+            .col-9
+              = link_to lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank"
           .row
             .col-3
               label VIN
@@ -32,4 +36,6 @@
           .row
             .col-3
               label Sale Date
-            .col-9 #{lot.sale_date}
+            .col-9
+              = lot.sale_date || "Future"
+              = " (in #{distance_of_time_in_words(Time.current, lot.sale_date)})" if lot.sale_date
