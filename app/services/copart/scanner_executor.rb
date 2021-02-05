@@ -5,7 +5,10 @@ module Copart
     end
 
     def call
-      `yarn scan_lot #{lot_number}`
+      username = Rails.application.credentials.copart[:username]
+      password = Rails.application.credentials.copart[:password]
+      
+      `yarn scan_lot #{lot_number} #{username} #{password}`
     end
 
     private

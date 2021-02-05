@@ -1,29 +1,21 @@
-import puppeteer from "puppeteer-extra"
-import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import HouseApiClient from "./HouseApiClient.js"
 import lotFields from "./lotFields.js"
-
-puppeteer.use(StealthPlugin())
 
 export default class LotScanner {
   constructor(lot_number) {
     this.api_client = new HouseApiClient("lot_scanner");
     this.lot_number = lot_number;
     this.url = `https://www.copart.com/lot/${lot_number}`;
+    this.pageNotFound = false;
   }
 
-  scan = async () => {
+  scan = async (page) => {
     console.log(`Scanning ${this.url}`)
 
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
-    const page = await browser.newPage()
-    await page.setViewport({ width: 1920, height: 1080 });
     await page.goto(this.url, { waitUntil: "load" })
-
     const data = await this.collectData(page);
-    await this.api_client.send(data);
 
-    await browser.close()
+    if(!this.pageNotFound) { await this.api_client.send(data) }
   }
 
   // private
@@ -32,6 +24,7 @@ export default class LotScanner {
 
     for(const field of lotFields) {
        data[field.name] = await this.processField(page, field, false);
+       if(this.pageNotFound) { return }
        console.log(`${field.name}: ${data[field.name]}`)
     }
 
@@ -42,7 +35,7 @@ export default class LotScanner {
     let fieldValue = "";
 
     await page
-      .waitForSelector(field.selector, { timeout: reloaded ? 20000 : 5000 })
+      .waitForSelector(field.selector)
       .then(async (element) => {
         let elementText = await page.evaluate(el => el.textContent, element);
         fieldValue = elementText.trim();
@@ -50,13 +43,24 @@ export default class LotScanner {
       .catch(async () => {
         console.log(`error ${field.name}`)
 
-        if(reloaded) { await page.screenshot({path: `screenshots/${Date.now()}_error_${field.name}.png`}) }
+        await this.checkPageNotFound(page)
+
+        if(this.pageNotFound) { console.log("Page Not Found") }
         else {
-          await page.reload({ waitUntil: "load" });
-          fieldValue = await this.processField(page, field, true)
+          if(reloaded) { await page.screenshot({path: `screenshots/${Date.now()}_error_${field.name}.png`}) }
+          else {
+            await page.reload({ waitUntil: "load" });
+            fieldValue = await this.processField(page, field, true)
+          }
         }
       })
 
     return fieldValue;
+  }
+
+  checkPageNotFound = async (page) => {
+    await page.waitForSelector('span[content="404 - Page Not Found"]')
+      .then(() => { this.pageNotFound = true })
+      .catch(() => { this.pageNotFound = false })
   }
 }
