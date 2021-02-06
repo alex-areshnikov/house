@@ -1,7 +1,7 @@
 module Copart
-  class BadIncomingDataResolver
+  class LoggerResolver
     def initialize(data)
-      @data = data
+      @data = data["data"]
     end
 
     def call
@@ -12,9 +12,9 @@ module Copart
 
     def attributes
       {
-        level: "error",
-        source: self.class.name,
-        description: "Bad incoming data: #{data}"
+        level: data["level"],
+        source: data["source"],
+        description: [data["error"], data["message"], data["stack"]].compact.join("\n\n")
       }
     end
 

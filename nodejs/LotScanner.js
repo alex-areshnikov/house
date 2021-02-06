@@ -2,7 +2,8 @@ import HouseApiClient from "./HouseApiClient.js"
 import lotFields from "./lotFields.js"
 
 export default class LotScanner {
-  constructor(lot_number) {
+  constructor(logger, lot_number) {
+    this.logger = logger;
     this.api_client = new HouseApiClient("lot_scanner");
     this.lot_number = lot_number;
     this.url = `https://www.copart.com/lot/${lot_number}`;
@@ -10,7 +11,7 @@ export default class LotScanner {
   }
 
   scan = async (page) => {
-    console.log(`Scanning ${this.url}`)
+    this.logger.say(`Scanning ${this.url}`)
 
     await page.goto(this.url, { waitUntil: "load" })
     const data = await this.collectData(page);
@@ -41,11 +42,11 @@ export default class LotScanner {
         fieldValue = elementText.trim();
       })
       .catch(async () => {
-        console.log(`error ${field.name}`)
+        this.logger.say(`error ${field.name}`)
 
         await this.checkPageNotFound(page)
 
-        if(this.pageNotFound) { console.log("Page Not Found") }
+        if(this.pageNotFound) { this.logger.say("Page Not Found") }
         else {
           if(reloaded) { await page.screenshot({path: `screenshots/${Date.now()}_error_${field.name}.png`}) }
           else {

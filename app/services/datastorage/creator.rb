@@ -1,7 +1,8 @@
 module Datastorage
   class Creator
     CREATORS = {
-      copart_lot: ->(attributes) { ::CopartLot.create!(attributes) }
+      copart_lot: ->(attributes) { ::CopartLot.create!(attributes) },
+      house_log: ->(attributes) { ::HouseLog.create!(attributes) }
     }
 
     def initialize(target_object, attributes)

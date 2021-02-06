@@ -23,6 +23,13 @@ ul#accordionSidebar.navbar-nav.bg-gradient-primary.sidebar.sidebar-dark.accordio
   hr.sidebar-divider.my-0
 
   li.nav-item
+    = link_to logs_path, class: "nav-link" do
+      i.fa.fa-fw.fa-book
+      span Logs
+
+    hr.sidebar-divider.my-0
+
+  li.nav-item
     = link_to destroy_user_session_path, method: :delete, class: "nav-link" do
       i.fa.fa-fw.fa-sign-out-alt
       span Logout

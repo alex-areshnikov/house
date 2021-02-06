@@ -12,9 +12,11 @@ const username = process.argv[process.argv.length - 3]
 const password = process.argv[process.argv.length - 2]
 const actionType = process.argv[process.argv.length - 1]
 
-const logger = new ApiLogger();
-const loginner = new Loginner(username, password);
-const scanner = new LotScanner(lot_number);
+const logger = new ApiLogger(`${actionType}-lot-${lot_number}`);
+const loginner = new Loginner(logger, username, password);
+const scanner = new LotScanner(logger, lot_number);
+
+await logger.say(`Starting browser routine`)
 
 try {
     await loginner.login();
@@ -29,8 +31,10 @@ try {
         default:
             console.log(`Unrecognized actionType ${actionType}.`);
     }
+
+    await logger.say(`Completed browser routine`)
 } catch(error) {
-    console.log(error)
+    console.error(error)
     await logger.error(error.message, error.stack, error.constructor.name);
     process.exitCode = 1
 } finally {

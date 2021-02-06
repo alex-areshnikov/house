@@ -2,7 +2,7 @@ module Copart
   class DataResolverFactory
     COMMUNICATOR_RESOLVERS = {
       "lot_scanner" => ::Copart::ScannerDataLoader,
-      "logger" => "" # TODO: implement me
+      "logger" => ::Copart::LoggerResolver
     }
 
     def self.for_communicator(data)

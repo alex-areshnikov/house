@@ -12,6 +12,8 @@ Rails.application.routes.draw do
 
   mount Sidekiq::Web => '/sidekiq'
 
+  resources :logs, only: %i[index]
+
   namespace :copart do
     resources :lots, only: %i[index create new destroy]
     resources :scanners, only: %i[show]

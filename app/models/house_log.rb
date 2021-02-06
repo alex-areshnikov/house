@@ -1,0 +1,2 @@
+class HouseLog < ApplicationRecord
+end

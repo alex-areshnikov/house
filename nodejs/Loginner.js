@@ -8,7 +8,8 @@ const cookies_path = "./cookies.json"
 const url = "https://www.copart.com"
 
 export default class Loginner {
-  constructor(username, password) {
+  constructor(logger, username, password) {
+    this.logger = logger;
     this.username = username;
     this.password = password;
     this.successfulLogin = false;
@@ -44,7 +45,7 @@ export default class Loginner {
   // private
 
   directLogin = async () => {
-    console.log("Direct login...")
+    this.logger.say("Performing direct login...")
     await this.page.goto(`${url}/login`, { waitUntil: "load" })
 
     await this.page.waitForSelector('#username');
@@ -62,12 +63,12 @@ export default class Loginner {
 
     await this.storeCookies();
 
-    console.log(this.successfulLogin ? "Success" : "Failed")
+    if(!this.successfulLogin) { this.logger.say("Direct login failed") }
   }
 
   cookiesLogin = async () => {
     if(!await fs.existsSync(cookies_path)) { return false }
-    console.log("Cookies login...")
+    this.logger.say("Performing cookies login")
 
     const cookiesString = await fs.readFileSync(cookies_path);
     const cookies = JSON.parse(cookiesString);
@@ -78,7 +79,7 @@ export default class Loginner {
       .then(() => { this.successfulLogin = true })
       .catch(() => { this.successfulLogin = false })
 
-    console.log(this.successfulLogin ? "Success" : "Failed")
+    if(!this.successfulLogin) { this.logger.say("Cookies login failed") }
   }
 
   storeCookies = async () => {

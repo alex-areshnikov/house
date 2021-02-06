@@ -20,6 +20,8 @@ export default class HouseApiClient {
       method: 'post',
       url: `${host}/${url}`,
       data: decorated_data
-    });
+    }).catch(error => {
+      console.error(error.response)
+    })
   }
 }
