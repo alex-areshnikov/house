@@ -14,6 +14,14 @@ export default class ApiLogger {
     })
   }
 
+  warn = async (message) => {
+    await this.api_client.send({
+      level: "warn",
+      source: this.source,
+      message: message
+    })
+  }
+
   error = async (message, stack, type) => {
     await this.api_client.send({
       level: "error",

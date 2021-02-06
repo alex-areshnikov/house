@@ -29,7 +29,7 @@ try {
             if(loginner.isSuccess()) { await auctioneer.watch(loginner.loggedInPage()) }
             break;
         default:
-            console.log(`Unrecognized actionType ${actionType}.`);
+            await logger.warn(`Unrecognized actionType ${actionType}.`);
     }
 
     await logger.say(`Completed browser routine`)

@@ -22,7 +22,7 @@
             .col-3
               label Name
             .col-9
-              = link_to lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank"
+              = link_to(lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank") if lot.name.present?
           .row
             .col-3
               label VIN
@@ -39,5 +39,5 @@
             .col-3
               label Sale Date
             .col-9
-              = lot.sale_date || "Future"
-              = " (#{distance_of_time_in_words(Time.current, lot.sale_date)})" if lot.sale_date
+              = lot.sale_date || "Future" if lot.name.present?
+              = " (#{distance_of_time_in_words(Time.current, lot.sale_date)})" if lot.sale_date.present?

@@ -45,11 +45,14 @@ export default class Loginner {
   // private
 
   directLogin = async () => {
-    this.logger.say("Performing direct login...")
+    await this.logger.say("Performing direct login...")
     await this.page.goto(`${url}/login`, { waitUntil: "load" })
 
     await this.page.waitForSelector('#username');
     await this.page.waitForSelector('#password');
+
+    await this.page.evaluate( () => document.getElementById("username").value = "")
+    await this.page.evaluate( () => document.getElementById("password").value = "")
 
     await this.page.type('#username', this.username, {delay: 100});
     await this.page.type('#password', this.password, {delay: 100});
@@ -61,14 +64,17 @@ export default class Loginner {
       .then(() => { this.successfulLogin = true })
       .catch(() => { this.successfulLogin = false })
 
-    await this.storeCookies();
-
-    if(!this.successfulLogin) { this.logger.say("Direct login failed") }
+    if(this.successfulLogin) {
+      await this.storeCookies();
+    } else {
+      await this.logger.warn("Direct login failed")
+      await this.page.screenshot({path: `screenshots/${Date.now()}_error_direct_login.png`})
+    }
   }
 
   cookiesLogin = async () => {
     if(!await fs.existsSync(cookies_path)) { return false }
-    this.logger.say("Performing cookies login")
+    await this.logger.say("Performing cookies login")
 
     const cookiesString = await fs.readFileSync(cookies_path);
     const cookies = JSON.parse(cookiesString);
@@ -79,12 +85,10 @@ export default class Loginner {
       .then(() => { this.successfulLogin = true })
       .catch(() => { this.successfulLogin = false })
 
-    if(!this.successfulLogin) { this.logger.say("Cookies login failed") }
+    if(!this.successfulLogin) { await this.logger.warn("Cookies login failed") }
   }
 
   storeCookies = async () => {
-    if(!this.successfulLogin) { return }
-
     if(await fs.existsSync(cookies_path)) { await fs.rmSync(cookies_path) }
     const cookies = await this.page.cookies();
     await fs.writeFile(cookies_path, JSON.stringify(cookies, null, 2), () => {  });

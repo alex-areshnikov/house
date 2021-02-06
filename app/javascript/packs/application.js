@@ -14,6 +14,8 @@ require("startbootstrap-sb-admin-2/vendor/fontawesome-free/js/all.min")
 import "startbootstrap-sb-admin-2/css/sb-admin-2.min.css"
 import "startbootstrap-sb-admin-2/vendor/fontawesome-free/css/all.min.css"
 
+import "./styles/common.css"
+
 // Uncomment to copy all static images under ../images to the output folder and reference
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
 // or the `imagePath` JavaScript helper below.
