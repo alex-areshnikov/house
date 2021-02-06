@@ -21,7 +21,7 @@ export default class HouseApiClient {
       url: `${host}/${url}`,
       data: decorated_data
     }).catch(error => {
-      console.error(error.response)
+      console.error(`AXIOS failed ${error.response}`)
     })
   }
 }

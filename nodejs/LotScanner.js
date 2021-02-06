@@ -1,5 +1,6 @@
 import HouseApiClient from "./HouseApiClient.js"
 import lotFields from "./lotFields.js"
+import PhotosCollector from "./PhotosCollector.js"
 
 export default class LotScanner {
   constructor(logger, lot_number) {
@@ -31,6 +32,10 @@ export default class LotScanner {
     for(const field of lotFields) {
        data[field.name] = await this.processField(page, field);
     }
+
+    await this.logger.say("Collecting photos")
+    const photosCollector = new PhotosCollector(page);
+    data["photo_urls"] = await photosCollector.collect()
 
     return data;
   }

@@ -5,6 +5,9 @@ module Copart
     end
 
     def call
+      photo_urls = data.delete("photo_urls")
+      puts photo_urls.inspect
+
       ::Datastorage::Updater.new(:copart_lot, data).update_or_create
     end
 

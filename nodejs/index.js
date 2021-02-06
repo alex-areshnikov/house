@@ -18,6 +18,10 @@ const scanner = new LotScanner(logger, lot_number);
 
 await logger.say(`Starting browser routine`)
 
+process.on('unhandledRejection', async (error) => {
+    await logger.error(error.message, error.stack, error.constructor.name);
+});
+
 try {
     await loginner.login();
 
@@ -34,6 +38,7 @@ try {
 
     await logger.say(`Completed browser routine`)
 } catch(error) {
+    console.error("HERE!")
     console.error(error)
     await logger.error(error.message, error.stack, error.constructor.name);
     process.exitCode = 1
