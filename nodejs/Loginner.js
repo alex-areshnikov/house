@@ -19,7 +19,7 @@ export default class Loginner {
     this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     this.page = await this.browser.newPage()
     await this.page.setDefaultTimeout(10000)
-    await this.page.setViewport({ width: 1711, height: 901 });
+    await this.page.setViewport({ width: 1711, height: 1101 });
 
     await this.cookiesLogin()
 

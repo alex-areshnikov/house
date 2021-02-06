@@ -2,6 +2,7 @@ module Datastorage
   class Creator
     CREATORS = {
       copart_lot: ->(attributes) { ::CopartLot.create!(attributes) },
+      copart_lot_photo: ->(attributes) { ::CopartLotPhoto.create!(attributes) },
       house_log: ->(attributes) { ::HouseLog.create!(attributes) }
     }
 

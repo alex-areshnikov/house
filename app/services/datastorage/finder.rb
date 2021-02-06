@@ -1,7 +1,7 @@
 module Datastorage
   class Finder
     FINDERS = {
-      copart_lot: ->(attributes) { ::CopartLot.where(lot_number: attributes["lot_number"]) }
+      copart_lot: ->(attributes) { ::CopartLot.where(lot_number: attributes["id"] || attributes["lot_number"]) }
     }
 
     def initialize(target_object, attributes)

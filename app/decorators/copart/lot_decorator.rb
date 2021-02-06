@@ -9,6 +9,13 @@ module Copart
       @lot = lot
     end
 
+    def photo_thumb_url
+      copart_lot_photo = lot.copart_lot_photos.first
+
+      return if copart_lot_photo.blank?
+      copart_lot_photo.photo.thumb.url
+    end
+
     def state_text
       aasm.current_state.to_s.humanize
     end

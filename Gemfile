@@ -70,3 +70,5 @@ gem "redis", "~> 4.2"
 gem "sidekiq", "~> 6.1"
 
 gem "kaminari", "~> 1.2"
+
+gem "carrierwave", "~> 2.1"

@@ -8,34 +8,38 @@
     .col-12 data-lot-id="#{lot.id}"
       .card.shadow.mb-2
         .card-body
-          .d-flex
-            h5.card-title.flex-grow-1
-              = "Lot #{lot.lot_number}"
-            span.pr-5.state-field
-              = lot.state_text
-            span.pr-1
-              = link_to copart_scanner_path(lot.id), data: { turbolinks:false, confirm: "Are you sure?" } do
-                i.fas.fa-undo
-            = link_to copart_lot_path(lot.id), method: :delete, data: { confirm: "Are you sure?" } do
-              i.fas.fa-trash
           .row
-            .col-3
-              label Name
-            .col-9
-              = link_to(lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank") if lot.name.present?
-          .row
-            .col-3
-              label VIN
-            .col-9 #{lot.vin}
-          .row
-            .col-3
-              label Primary Damage
-            .col-9 #{lot.primary_damage}
-          .row
-            .col-3
-              label Secondary Damage
-            .col-9 #{lot.secondary_damage}
-          .row
-            .col-3
-              label Sale Date
-            .col-9 #{lot.sale_date_text}
+            .col-2
+              = image_tag(lot.photo_thumb_url) if lot.photo_thumb_url
+            .col-10
+              .d-flex
+                h5.card-title.flex-grow-1
+                  = "Lot #{lot.lot_number}"
+                span.pr-5.state-field
+                  = lot.state_text
+                span.pr-1
+                  = link_to copart_scanner_path(lot.id), data: { turbolinks:false, confirm: "Are you sure?" } do
+                    i.fas.fa-undo
+                = link_to copart_lot_path(lot.id), method: :delete, data: { confirm: "Are you sure?" } do
+                  i.fas.fa-trash
+              .row
+                .col-3
+                  label Name
+                .col-9
+                  = link_to(lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank") if lot.name.present?
+              .row
+                .col-3
+                  label VIN
+                .col-9 #{lot.vin}
+              .row
+                .col-3
+                  label Primary Damage
+                .col-9 #{lot.primary_damage}
+              .row
+                .col-3
+                  label Secondary Damage
+                .col-9 #{lot.secondary_damage}
+              .row
+                .col-3
+                  label Sale Date
+                .col-9 #{lot.sale_date_text}

@@ -1,6 +1,8 @@
 class CopartLot < ApplicationRecord
   include AASM
 
+  has_many :copart_lot_photos, dependent: :destroy
+
   validates :lot_number, presence: true, uniqueness: true
 
   aasm do

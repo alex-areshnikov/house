@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_06_004201) do
+ActiveRecord::Schema.define(version: 2021_02_06_211135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "copart_lot_photos", force: :cascade do |t|
+    t.bigint "copart_lot_id", null: false
+    t.string "photo"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["copart_lot_id"], name: "index_copart_lot_photos_on_copart_lot_id"
+  end
 
   create_table "copart_lots", force: :cascade do |t|
     t.string "lot_number"
@@ -55,4 +63,5 @@ ActiveRecord::Schema.define(version: 2021_02_06_004201) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "copart_lot_photos", "copart_lots"
 end
