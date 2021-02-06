@@ -7,7 +7,7 @@ module Copart
     end
 
     def index
-      @lots = CopartLot.order(:sale_date).all
+      @page = ::Copart::LotsPage.new
     end
 
     def new
