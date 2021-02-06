@@ -5,14 +5,16 @@
 
 .row
   - @lots.each do |lot|
-    .col-12
+    .col-12 data-lot-id="#{lot.id}"
       .card.shadow.mb-2
         .card-body
           .d-flex
             h5.card-title.flex-grow-1
               = "Lot #{lot.lot_number}"
+            span.pr-5.state-field
+              = lot.aasm.current_state.to_s.humanize
             span.pr-1
-              = link_to copart_scanner_path(lot.lot_number), data: { confirm: "Are you sure?" } do
+              = link_to copart_scanner_path(lot), data: { turbolinks:false, confirm: "Are you sure?" } do
                 i.fas.fa-undo
             = link_to copart_lot_path(lot), method: :delete, data: { confirm: "Are you sure?" } do
               i.fas.fa-trash
@@ -38,4 +40,4 @@
               label Sale Date
             .col-9
               = lot.sale_date || "Future"
-              = " (in #{distance_of_time_in_words(Time.current, lot.sale_date)})" if lot.sale_date
+              = " (#{distance_of_time_in_words(Time.current, lot.sale_date)})" if lot.sale_date

@@ -5,19 +5,22 @@ class CopartLot < ApplicationRecord
 
   aasm do
     state :initialized, initial: true
-    state :processing
-    state :processed
+    state :scan_requested
+    state :scanning
+    state :scanned
+    state :auction_requested
+    state :auction_joined
 
-    event :reset do
-      transitions to: :initialized
+    event :scan do
+      transitions from: [:initialized, :scanned, :scan_requested],to: :scan_requested
     end
 
-    event :process do
-      transitions to: :processing
+    event :scan_start do
+      transitions from: :scan_requested, to: :scanning
     end
 
-    event :complete_process do
-      transitions from: :processing, to: :processed
+    event :scan_complete do
+      transitions from: :scanning, to: :scanned
     end
   end
 end

@@ -6,7 +6,6 @@ module Copart
 
     def call
       ::Datastorage::Updater.new(:copart_lot, data).update_or_create
-      ::ActionCable.server.broadcast("copart_lot_channel",  client_command: "reload")
     end
 
     private

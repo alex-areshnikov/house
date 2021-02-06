@@ -16,7 +16,9 @@ const copartLotChannel = consumer.subscriptions.create("CopartLotChannel", {
   },
 
   received(data) {
+    console.log(`${data.lot_id} ${data.status}`)
     if(data.client_command === "reload") window.location.reload()
+    // if(data.client_command === "update_lot") $(`#lot-${data.lot_id} .state-field`).text(data.status);
   }
 });
 
