@@ -1,0 +1,22 @@
+.modal.fade id="photo-carousel-modal-#{lot.id}" tabindex="-1" role="dialog" aria-labelledby="modal-lot#{lot.lot_number}" aria-hidden="true"
+  .modal-dialog.modal-dialog-centered.modal-xl role="document"
+    .modal-content
+      .modal-body.p-1
+        .carousel.slide id="photo-carousel-indicators-#{lot.id}" data-ride="carousel"
+          ol.carousel-indicators
+            - lot.photo_urls.each_with_index do |_, index|
+              li data-target="#photo-carousel-indicators-#{lot.id}" data-slide-to="#{index}" class="#{"active" if index == 0}"
+
+          .carousel-inner
+            - lot.photo_urls.each_with_index do |photo_url, index|
+              .carousel-item class="#{"active" if index == 0}"
+                img.d-block.w-100 src="#{photo_url}" alt="#{index+1} slide"
+
+
+          a.carousel-control-prev href="#photo-carousel-indicators-#{lot.id}" role="button" data-slide="prev"
+            span.carousel-control-prev-icon aria-hidden="true"
+            span.sr-only Previous
+
+          a.carousel-control-next href="#photo-carousel-indicators-#{lot.id}" role="button" data-slide="next"
+            span.carousel-control-next-icon aria-hidden="true"
+            span.sr-only Next

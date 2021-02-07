@@ -10,14 +10,25 @@ module Copart
     end
 
     def photo_thumb_url
-      copart_lot_photo = lot.copart_lot_photos.first
+      return unless photos?
 
-      return if copart_lot_photo.blank?
-      copart_lot_photo.photo.thumb.url
+      lot.copart_lot_photos.first.photo.thumb.url
+    end
+
+    def photos?
+      lot.copart_lot_photos.exists?
+    end
+
+    def photo_urls
+      lot.copart_lot_photos.map(&:photo_url)
     end
 
     def state_text
       aasm.current_state.to_s.humanize
+    end
+
+    def damage
+      [lot.primary_damage, lot.secondary_damage].reject(&:blank?).join(" / ")
     end
 
     def sale_date_text

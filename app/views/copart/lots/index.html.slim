@@ -8,10 +8,13 @@
     .col-12 data-lot-id="#{lot.id}"
       .card.shadow.mb-2
         .card-body
-          .row
-            .col-2
-              = image_tag(lot.photo_thumb_url) if lot.photo_thumb_url
-            .col-10
+          .row.align-items-center
+            .p-1
+              - if lot.photos?
+                a data-toggle="modal" data-target="#photo-carousel-modal-#{lot.id}"
+                  = image_tag(lot.photo_thumb_url, class: "img-thumbnail")
+                = render partial: "photo_carousel_modal", locals: { lot: lot }
+            .col-md
               .d-flex
                 h5.card-title.flex-grow-1
                   = "Lot #{lot.lot_number}"
@@ -33,12 +36,8 @@
                 .col-9 #{lot.vin}
               .row
                 .col-3
-                  label Primary Damage
-                .col-9 #{lot.primary_damage}
-              .row
-                .col-3
-                  label Secondary Damage
-                .col-9 #{lot.secondary_damage}
+                  label Damage
+                .col-9 #{lot.damage}
               .row
                 .col-3
                   label Sale Date
