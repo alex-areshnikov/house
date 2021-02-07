@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-// process.env.DOCKERIZED ?
-
-const host = "http://localhost:3000";
+const host = process.env.DOCKERIZED ? "http://app:3000" : "http://localhost:3000"
 const url = "api/copart/receiver";
 
 export default class HouseApiClient {
@@ -21,7 +19,7 @@ export default class HouseApiClient {
       url: `${host}/${url}`,
       data: decorated_data
     }).catch(error => {
-      console.error(`AXIOS failed ${error.response}`)
+      console.error(`AXIOS failed ${JSON.stringify(error.response)}`)
     })
   }
 }

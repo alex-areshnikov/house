@@ -44,9 +44,10 @@ export default class LotScanner {
     let fieldValue = "";
 
     fieldValue = await page.$eval(field.selector, element => element.textContent.trim())
-      .catch(() => { this.logger.warn(`${field.name} not found`) })
-
-    // await page.screenshot({path: `screenshots/${Date.now()}_error_${field.name}.png`})
+      .catch(() => {
+        page.screenshot({path: `screenshots/${Date.now()}_${this.lot_number}_error_${field.name}.png`})
+        this.logger.warn(`${field.name} not found`)
+      })
 
     return fieldValue;
   }

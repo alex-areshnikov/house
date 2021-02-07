@@ -8,9 +8,8 @@ export default class PhotosCollector {
     const thumbElements = await this.page.$$("#small-img-roll span.thumbImgblock")
 
     for(const thumbElement of thumbElements) {
-      await thumbElement.hover()
       await thumbElement.focus()
-      // this.page.waitForTimeout(1000)
+
       await thumbElement.click({ delay: 100 })
       this.page.waitForTimeout(200)
 
