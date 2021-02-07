@@ -9,11 +9,12 @@ export default class PhotosCollector {
 
     for(const thumbElement of thumbElements) {
       await thumbElement.focus()
+      this.page.waitForTimeout(200)
 
       await thumbElement.click({ delay: 100 })
       this.page.waitForTimeout(200)
 
-      const hdButton = await this.page.$("span.view-hd")
+      const hdButton = await this.page.waitForSelector('span.view-hd', { visible: true, timeout: 200 }).catch(() => {})
       if(hdButton) {
         await hdButton.click({ delay: 100 })
         this.page.waitForTimeout(200)
