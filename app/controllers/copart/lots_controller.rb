@@ -18,7 +18,7 @@ module Copart
       @lot = CopartLot.new(copart_lot_params)
       if @lot.save
         @lot.scan!
-        ::Copart::ScanLotJob.perform_later(@lot)
+        ::Copart::NodeCommandSender.scan_lot(@lot.lot_number)
 
         redirect_to copart_lots_path
       else

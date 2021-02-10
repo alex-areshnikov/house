@@ -1,50 +1,32 @@
-import LotScanner from './LotScanner.js';
 import ApiLogger from './ApiLogger.js';
-import Loginner from './Loginner.js'
+import redis from "redis";
+import CommandProcessor from "./CommandProcessor.js"
 
-if (process.argv.length != 6) {
-    console.log("Wrong number of arguments")
-    process.exit(1);
+const channelName = "house_node_channel"
+const loggerName = "copart-watcher"
+
+const redis_config = {
+    host: (process.env.DOCKERIZED ? "redis" : "127.0.0.1" )
 }
 
-const lot_number = process.argv[process.argv.length - 4]
-const username = process.argv[process.argv.length - 3]
-const password = process.argv[process.argv.length - 2]
-const actionType = process.argv[process.argv.length - 1]
+const logger = new ApiLogger(loggerName);
+const subscriber = redis.createClient(redis_config);
+const commandProcessor = new CommandProcessor(logger)
 
-const logger = new ApiLogger(`${actionType}-lot-${lot_number}`);
-const loginner = new Loginner(logger, username, password);
-const scanner = new LotScanner(logger, lot_number);
+subscriber.on("message", async (_, message) => {
+    try {
+        const data = JSON.parse(message)
 
-await logger.say(`Starting browser routine`)
+        await logger.say(`Executing command: ${data.command}`)
+        await commandProcessor.process(data)
 
-process.on('unhandledRejection', async (error) => {
-    await logger.error(error.message, error.stack, error.constructor.name);
-});
-
-try {
-    await loginner.login();
-
-    switch (actionType) {
-        case 'scan':
-            if(loginner.isSuccess()) { await scanner.scan(loginner.loggedInPage()) }
-            break;
-        case 'auction':
-            if(loginner.isSuccess()) { await auctioneer.watch(loginner.loggedInPage()) }
-            break;
-        default:
-            await logger.warn(`Unrecognized actionType ${actionType}.`);
+    } catch(error) {
+        console.error(error)
+        await logger.error(error.message, error.stack, error.constructor.name);
     }
+})
 
-    await logger.say(`Completed browser routine`)
-} catch(error) {
-    console.error("HERE!")
-    console.error(error)
-    await logger.error(error.message, error.stack, error.constructor.name);
-    process.exitCode = 1
-} finally {
-    process.exit(process.exitCode)
-}
+subscriber.subscribe(channelName);
 
 
 

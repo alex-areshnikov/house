@@ -17,7 +17,8 @@
     "turbolinks": "^5.2.0"
   },
   "scripts": {
-    "scan_lot": "node nodejs/index.js"
+    "copart_watcher": "node nodejs/index.js",
+    "scan_lot": "node nodejs/indexScan.js"
   },
   "version": "0.1.0",
   "devDependencies": {

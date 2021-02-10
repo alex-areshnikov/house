@@ -54,6 +54,13 @@ services:
       RAILS_LOG_TO_STDOUT: "true"
       SIDEKIQ_CONTAINER: "true"
 
+  nodejs:
+    build:
+      context: .
+      dockerfile: ./docker/nodejs/Dockerfile
+    depends_on:
+      - app
+
 #  grafana:
 #    image: grafana/grafana
 #    volumes:
