@@ -1,7 +1,7 @@
 module Copart
   class LotsPage
     def lots
-      ::CopartLot.order(:sale_date)
+      ::CopartLot.order(:sale_date, :created_at)
     end
 
     def decorated_lots
