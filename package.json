@@ -18,7 +18,8 @@
   },
   "scripts": {
     "copart_watcher": "node nodejs/index.js",
-    "scan_lot": "node nodejs/indexScan.js"
+    "scan_lot": "node nodejs/indexScan.js",
+    "watch_auction": "node nodejs/indexWatchAuction.js"
   },
   "version": "0.1.0",
   "devDependencies": {
