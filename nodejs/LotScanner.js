@@ -34,7 +34,7 @@ export default class LotScanner {
     }
 
     await this.logger.say("Collecting photos")
-    const photosCollector = new PhotosCollector(page);
+    const photosCollector = new PhotosCollector(this.logger, page);
     data["photo_urls"] = await photosCollector.collect()
 
     return data;

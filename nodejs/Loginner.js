@@ -1,6 +1,7 @@
 import fs from 'fs'
 import puppeteer from "puppeteer-extra"
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
+import copartLoginCredentials from "./copartLoginCredentials.js"
 
 puppeteer.use(StealthPlugin())
 
@@ -13,16 +14,20 @@ export default class Loginner {
     this.username = username;
     this.password = password;
     this.successfulLogin = false;
+    this.cookies = null;
+  }
+
+  createPage = async () => {
+    this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+    const page = await this.browser.newPage()
+    await page.setDefaultTimeout(10000)
+    await page.setViewport({ width: 1711, height: 1101 });
+
+    return page
   }
 
   login = async () => {
-    this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
-    this.page = await this.browser.newPage()
-    await this.page.setDefaultTimeout(10000)
-    await this.page.setViewport({ width: 1711, height: 1101 });
-
     await this.cookiesLogin()
-
     if(!this.successfulLogin) { await this.directLogin() }
 
     return this.successfulLogin;
@@ -32,10 +37,13 @@ export default class Loginner {
     return this.successfulLogin
   }
 
-  loggedInPage = () => {
+  loggedInPage = async () => {
     if(!this.isSuccess()) { return }
 
-    return this.page;
+    const page = await this.createPage();
+    await page.setCookie(...this.cookies);
+
+    return page;
   }
 
   close = async () => {
@@ -45,52 +53,63 @@ export default class Loginner {
   // private
 
   directLogin = async () => {
+    const credentials = await copartLoginCredentials();
+
     await this.logger.say("Performing direct login...")
-    await this.page.goto(`${url}/login`, { waitUntil: "load" })
 
-    await this.page.waitForSelector('#username');
-    await this.page.waitForSelector('#password');
+    const page = await this.createPage()
+    await page.goto(`${url}/login`, { waitUntil: "load" })
 
-    await this.page.evaluate( () => document.getElementById("username").value = "")
-    await this.page.evaluate( () => document.getElementById("password").value = "")
+    await page.waitForSelector('#username');
+    await page.waitForSelector('#password');
 
-    await this.page.type('#username', this.username, {delay: 100});
-    await this.page.type('#password', this.password, {delay: 100});
+    await page.evaluate( () => document.getElementById("username").value = "")
+    await page.evaluate( () => document.getElementById("password").value = "")
 
-    await this.page.click('input[name=remember-me]', {delay: 100})
+    await page.type('#username', credentials.username, {delay: 100});
+    await page.type('#password', credentials.password, {delay: 100});
 
-    await this.page.click('button[data-uname=loginSigninmemberbutton]', {delay: 100})
-    await this.page.waitForSelector('span.signout')
+    await page.click('input[name=remember-me]', {delay: 100})
+
+    await page.click('button[data-uname=loginSigninmemberbutton]', {delay: 100})
+    await page.waitForSelector('span.signout')
       .then(() => { this.successfulLogin = true })
       .catch(() => { this.successfulLogin = false })
 
     if(this.successfulLogin) {
+      this.cookies = await page.cookies();
       await this.storeCookies();
     } else {
       await this.logger.warn("Direct login failed")
-      await this.page.screenshot({path: `screenshots/${Date.now()}_error_direct_login.png`})
+      await page.screenshot({path: `screenshots/${Date.now()}_error_direct_login.png`})
     }
+
+    await page.close();
   }
 
   cookiesLogin = async () => {
     if(!await fs.existsSync(cookies_path)) { return false }
     await this.logger.say("Performing cookies login")
 
+    const page = await this.createPage()
+
     const cookiesString = await fs.readFileSync(cookies_path);
     const cookies = JSON.parse(cookiesString);
-    await this.page.setCookie(...cookies);
+    await page.setCookie(...cookies);
 
-    await this.page.goto(url, { waitUntil: "load" })
-    await this.page.waitForSelector('span.signout')
+    await page.goto(url, { waitUntil: "load" })
+    await page.waitForSelector('span.signout')
       .then(() => { this.successfulLogin = true })
       .catch(() => { this.successfulLogin = false })
 
-    if(!this.successfulLogin) { await this.logger.warn("Cookies login failed") }
+    if(this.successfulLogin) { this.cookies = await page.cookies(); }
+    else { await this.logger.warn("Cookies login failed") }
+
+    await page.close()
   }
 
   storeCookies = async () => {
     if(await fs.existsSync(cookies_path)) { await fs.rmSync(cookies_path) }
-    const cookies = await this.page.cookies();
-    await fs.writeFile(cookies_path, JSON.stringify(cookies, null, 2), () => {  });
+    await fs.writeFile(cookies_path, JSON.stringify(this.cookies, null, 2), () => {  });
   }
 }

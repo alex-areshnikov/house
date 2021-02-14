@@ -21,6 +21,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :copart do
+      resources :credentials, only: %i(index)
       resource :receiver, only: %i(create)
     end
   end

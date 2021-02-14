@@ -1,6 +1,7 @@
-import ApiLogger from './ApiLogger.js';
 import redis from "redis";
+import ApiLogger from './ApiLogger.js';
 import CommandProcessor from "./CommandProcessor.js"
+import Loginner from "./Loginner.js";
 
 const channelName = "house_node_channel"
 const loggerName = "copart-watcher"
@@ -10,23 +11,38 @@ const redis_config = {
 }
 
 const logger = new ApiLogger(loggerName);
-const subscriber = redis.createClient(redis_config);
-const commandProcessor = new CommandProcessor(logger)
+const redisClient = redis.createClient(redis_config);
+const commandProcessor = new CommandProcessor(logger);
+const loginner = new Loginner(logger);
 
-subscriber.on("message", async (_, message) => {
-    try {
+redisClient.on("message", async (_, message) => {
+    await logger.say("Starting browser routine")
+
+    if(await loginner.login()) {
         const data = JSON.parse(message)
 
         await logger.say(`Executing command: ${data.command}`)
-        await commandProcessor.process(data)
 
-    } catch(error) {
-        console.error(error)
-        await logger.error(error.message, error.stack, error.constructor.name);
+        const page = await loginner.loggedInPage()
+        await commandProcessor.process(page, data)
+    } else {
+        await logger.error("Log in was not successful")
     }
+
+    await logger.say("Completed browser routine")
 })
 
-subscriber.subscribe(channelName);
+redisClient.subscribe(channelName);
+
+process.on('uncaughtException', async (error) => {
+    console.error(error)
+    await logger.error(error.message, error.stack, error.constructor.name);
+    process.exit(1)
+});
+
+process.on('unhandledRejection', async (error) => {
+    await logger.error(error.message, error.stack, error.constructor.name);
+});
 
 
 

@@ -1,4 +1,6 @@
 import { spawn } from "child_process";
+import ApiLogger from "./ApiLogger.js";
+import LotScanner from "./LotScanner.js";
 
 const KNOWN_COMMANDS = {
   scanLotCommand: "scan-lot",
@@ -12,14 +14,14 @@ export default class CommandProcessor {
     this.openedAuctions = {};
   }
 
-  process = async (data) => {
+  process = async (page, data) => {
     switch (data.command) {
       case KNOWN_COMMANDS.scanLotCommand:
-        this.spawnScanLot(data);
+        await this.performScanLot(page, data.lot_number);
 
         break
       case KNOWN_COMMANDS.watchAuction:
-        this.spawnWatchAuction(data);
+        await this.performWatchAuction(page, data);
 
         break
       case KNOWN_COMMANDS.closeAuction:
@@ -29,17 +31,26 @@ export default class CommandProcessor {
       default:
         await this.logger.warn(`Unrecognized command ${data.command}.`);
     }
+
+    await page.close();
   }
 
-  spawnScanLot = (data) => {
-    const scannerProcess = spawn("yarn", ["scan_lot", data.lot_number, data.username, data.password]);
+  performScanLot = async (page, lotNumber) => {
+    const scanLogger = new ApiLogger(`scan-lot-${lotNumber}`);
+    let scanError = false;
 
-    scannerProcess.on('close', (code) => {
-      this.logger.say(`scan-lot-${data.lot_number} exited with code ${code}`);
-    });
+    await (async () => {
+      const scanner = new LotScanner(scanLogger, lotNumber);
+      await scanner.scan(page)
+    })().catch(async error =>  scanError = error)
+
+    if(scanError) {
+      console.error(scanError)
+      await scanLogger.error(scanError.message, scanError.stack, scanError.constructor.name);
+    }
   }
 
-  spawnWatchAuction = (data) => {
+  spawnWatchAuction = async (data) => {
     if(this.openedAuctions[data.lot_number]) {
       this.logger.warn(`Auctioneer is already spawned for ${data.lot_number}`);
       return
