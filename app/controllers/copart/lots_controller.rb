@@ -7,7 +7,7 @@ module Copart
     end
 
     def index
-      @page = ::Copart::LotsPage.new
+      @page = ::Copart::LotsPage.new(params[:page], params[:query])
     end
 
     def new

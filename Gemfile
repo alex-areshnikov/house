@@ -76,3 +76,5 @@ gem "carrierwave", "~> 2.1"
 gem "fog-aws", "~> 3.8"
 
 gem "rspec-its", "~> 1.3"
+
+gem "ransack", "~> 2.4"
