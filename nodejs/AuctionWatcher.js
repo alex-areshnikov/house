@@ -1,65 +1,121 @@
 import HouseApiClient from "./HouseApiClient.js"
+import AuctionVehicleNumbersProcessor from "./AuctionVehicleNumbersProcessor.js"
+import AuctionVehiclePriceProcessor from "./AuctionVehiclePriceProcessor.js"
+import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
+
+const AUCTION_FRAME_NAME = "iAuction5"
+const ONE_SECOND = 1000
 
 export default class AuctionWatcher {
-  constructor(logger, lot_number) {
+  constructor(logger, lotNumber) {
     this.logger = logger;
-    this.api_client = new HouseApiClient("auction_watcher");
-    this.lot_number = lot_number;
-    this.url = `https://www.copart.com/lot/${lot_number}`;
+    this.apiClient = new HouseApiClient("auction_watcher");
+    this.url = `https://www.copart.com/lot/${lotNumber}`;
+
+    this.auctionVehicleNumbersProcessor = new AuctionVehicleNumbersProcessor(logger, lotNumber)
+    this.auctionVehiclePriceProcessor = new AuctionVehiclePriceProcessor(logger, lotNumber)
+    this.unexpectedPageStateReporter = new UnexpectedPageStateReporter(logger, lotNumber)
+
+    this.closeRequested = false
   }
 
   watch = async (page) => {
-    console.log(`Opening ${this.url}`)
+    await this.logger.say(`Opening ${this.url}`)
 
     await page.goto(this.url, { waitUntil: "load" })
-    const lotExists = await page.waitForSelector('.lot-information')
-      .catch(() => { this.logger.warn("Lot not found") })
+    const lotExists = await page.waitForSelector('.lot-information').catch(() => {})
 
     if(lotExists) {
       await this.processAuction(page)
     } else {
-      await page.screenshot({path: `screenshots/${Date.now()}_error_lot_${this.lot_number}_not_found.png`})
+      await this.unexpectedPageStateReporter.report(page, "Lot not found")
     }
-
-    // 1. find and click bid button
-    // 2. check and close auction if vehicle has outdated number
-    // 3. on lot change check if the lot is vehicle lot
-    // 4. if so, watch and emit price
-    // 5. otherwise go to 2
   }
 
   processAuction = async (page) => {
-    const auctionButton = await page.waitForSelector('.live-auction-notification a')
-      .catch(() => { this.logger.warn("Auction not found") })
+    const auctionButton = await page.waitForSelector('.live-auction-notification a').catch(() => {})
 
-    if(!auctionButton) return
+    if(!auctionButton) {
+      await this.unexpectedPageStateReporter.report(page, "Auction not found")
+      return
+    }
 
-    auctionButton.click({ delay: 69 })
+    await auctionButton.click()
+    await page.waitForNavigation({ waitUntil: "networkidle2" }).catch(() => {})
 
-    // TODO find iframe first
+    const frame = await this.auctionFrame(page)
 
-    const actionPageExists = await page.waitForSelector('.widget')
-      .catch(() => { this.logger.warn("Auction page not found") })
-
-    if(actionPageExists) {
-      await this.reportAuctionLotNumber(page)
+    if(frame){
+      await this.processFrame(page, frame)
     } else {
-      await page.screenshot({path: `screenshots/${Date.now()}_error_auction_page_${this.lot_number}_not_found.png`})
+      await this.unexpectedPageStateReporter.report(page, "Frame not found")
     }
   }
 
-  reportAuctionLotNumber = async (page) => {
-    const currentVehicleNumberElement = await page.waitForSelector('.auction-wrapper-MEGA [data-uname="lot-details-value"]')
-      .catch(() => { this.logger.warn("Current vehicle number not found") })
+  auctionFrame = async (page) => {
+    const frames = await page.frames()
 
-    const targetVehicleNumberElement = await page.waitForSelector('.megaFutureLotHeaderWrapper [data-uname="lot-details-value"]')
-      .catch(() => { this.logger.warn("Target vehicle number not found") })
+    for(const frame of frames) {
+      if(await frame.name() === AUCTION_FRAME_NAME) return frame;
+    }
 
-    if(!currentVehicleNumberElement || !targetVehicleNumberElement) return
+    return null
+  }
 
-    const currentVehicleNumber = currentVehicleNumberElement.evaluate(element => element.textContent.trim())
-    const targetVehicleNumber = targetVehicleNumberElement.evaluate(element => element.textContent.trim())
+  processFrame = async (page, frame) => {
+    const actionPageExists = await frame.waitForSelector('.widget').catch(() => {})
 
-    this.logger.say(`Auction page found. Current vehicle ${currentVehicleNumber} / Target vehicle ${targetVehicleNumber}`)
+    if(actionPageExists) {
+      if(await this.processTargetNumber(frame)) {
+        do {
+          await this.processCurrentNumber(frame)
+          if(this.auctionVehicleNumbersProcessor.isMatch()) { await this.auctionVehiclePriceProcessor.process(frame) }
+          await page.waitForTimeout(ONE_SECOND)
+        } while (this.auctionVehicleNumbersProcessor.isCurrentBeforeOrMatchTarget()
+                  && !this.closeRequested && !this.auctionVehiclePriceProcessor.isSold());
+
+        if(this.auctionVehiclePriceProcessor.isSold()) {
+          await this.logger.say(`The vehicle is sold for ${this.auctionVehiclePriceProcessor.lastPrice()}`)
+        }
+
+        if(this.auctionVehicleNumbersProcessor.isCurrentPassedTarget()) {
+          await this.logger.warn("The target has already passed")
+        }
+      }
+    } else {
+      await this.unexpectedPageStateReporter.report(page, "Auction page not found")
+    }
+  }
+
+  processCurrentNumber = async (frame) => {
+    const currentNumberElement = await frame.waitForSelector('.auction-wrapper-MEGA span[data-uname="lot-details-value"]').catch(() => {})
+
+    if(currentNumberElement) {
+      const currentNumber = await currentNumberElement.evaluate(element => element.textContent.trim())
+      await this.auctionVehicleNumbersProcessor.processCurrent(currentNumber)
+      await this.auctionVehicleNumbersProcessor.report()
+    } else {
+      await this.auctionVehicleNumbersProcessor.currentNotFound()
+      await this.unexpectedPageStateReporter.report(frame, "Current vehicle number not found")
+    }
+  }
+
+  processTargetNumber = async (frame) => {
+    const targetNumberElement = await frame.waitForSelector('.megaFutureLotHeaderWrapper span[data-uname="lot-details-value"]').catch(() => {})
+
+    if(targetNumberElement) {
+      const targetNumber = await targetNumberElement.evaluate(element => element.textContent.trim())
+      await this.auctionVehicleNumbersProcessor.processTarget(targetNumber)
+      return true
+    } else {
+      await this.unexpectedPageStateReporter.report(frame, "Target vehicle number not found")
+      return false
+    }
+  }
+
+  requestClose = async () => {
+    this.closeRequested = true
+
+    await this.logger.say("Auction close requested. Exiting now.")
   }
 }
