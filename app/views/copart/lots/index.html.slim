@@ -39,7 +39,7 @@
                 span.pr-5.state-field
                   = lot.state_text
                 span.pr-1
-                  = link_to copart_scanner_path(lot.id), data: { turbolinks:false, confirm: "Are you sure?" } do
+                  = link_to copart_scanner_path(lot.id), data: { turbolinks: false, confirm: "Are you sure?" } do
                     i.fas.fa-undo
                 = link_to copart_lot_path(lot.id), method: :delete, data: { confirm: "Are you sure?" } do
                   i.fas.fa-trash

@@ -3,7 +3,7 @@ module Copart
     def show
       copart_lot = find_lot
       # copart_lot.scan!
-      ::Copart::NodeCommandSender.scan_lot(copart_lot)
+      ::Copart::NodeCommandSender.scan_lot(copart_lot.lot_number)
 
       redirect_to copart_lots_path
     end

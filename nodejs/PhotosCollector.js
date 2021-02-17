@@ -1,48 +1,58 @@
+import HouseApiClient from "./HouseApiClient.js"
+import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
+
 export default class PhotosCollector {
-  constructor(logger, page) {
-    this.page = page;
+  constructor(logger, lotNumber) {
     this.logger = logger;
+    this.apiClient = new HouseApiClient("photos_collector");
+    this.lotNumber = lotNumber
+    this.url = `https://www.copart.com/lot/${lotNumber}`;
+
+    this.unexpectedPageStateReporter = new UnexpectedPageStateReporter(logger, lotNumber)
   }
 
-  collect = async () => {
+  collect = async (page) => {
     const photoUrls = [];
+    await this.logger.say("Collecting photos")
 
-    await this.page.reload({ waitUntil: "load" })
+    await page.goto(this.url, { waitUntil: "load" })
 
     for(let index = 0; index < 10; index++) {
-      photoUrls.push(await this.collectPhoto(index))
+      photoUrls.push(await this.collectPhoto(page, index))
     }
 
-    return photoUrls
+    const data = { lot_number: this.lotNumber, photo_urls: photoUrls };
+    await this.apiClient.send(data)
   }
 
-  collectPhoto = async (index, level = 0) => {
-    const galeria = await this.page.waitForSelector('.image-galleria_wrap', { visible: true, timeout: 10000 })
-      .catch(() => { this.page.screenshot({path: `screenshots/${Date.now()}_${index}_${level}_galeria_not_found.png`})})
+  collectPhoto = async (page, index, level = 0) => {
+    const galeria = await page.waitForSelector('.image-galleria_wrap', { visible: true, timeout: 10000 }).catch(() => {})
 
     if(galeria) {
-      const thumbButton = await this.page.waitForSelector(`.thumbnailImg[target-index="${index}"]`, { visible: true, timeout: 1000 })
-        .catch(() => { this.page.screenshot({path: `screenshots/${Date.now()}_${index}_${level}_photo_thumb_not_found.png`})})
+      const thumbButton = await page.waitForSelector(`.thumbnailImg[target-index="${index}"]`, { visible: true, timeout: 1000 }).catch(() => {})
 
       if(thumbButton) {
         await thumbButton.click()
 
-        const hdButton = await this.page.waitForSelector('span.view-hd', { visible: true, timeout: 200 }).catch(() => {})
+        const hdButton = await page.waitForSelector('span.view-hd', { visible: true, timeout: 200 }).catch(() => {})
         if(hdButton) { await hdButton.click() }
 
-        const mainPhoto = await this.page.waitForSelector(".spZoomImg", { visible: true, timeout: 1000 })
-          .catch(() => { this.page.screenshot({path: `screenshots/${Date.now()}_${index}_${level}_photo_url_not_found.png`})})
+        const mainPhoto = await page.waitForSelector(".spZoomImg", { visible: true, timeout: 1000 }).catch(() => {})
 
         if(mainPhoto) {
           return(await mainPhoto.evaluate(el => el.getAttribute("sp-url")))
         } else if(level < 3) {
           await this.logger.warn(`Retry ${level+1} photo ${index}`)
-          await this.page.reload({ waitUntil: "load" })
-          return(await this.collectPhoto(index, level + 1))
+          await page.reload({ waitUntil: "load" })
+          return(await this.collectPhoto(page, index, level + 1))
         } else {
-          await this.logger.error(`Failed to load photo ${index}`)
+          await this.unexpectedPageStateReporter.report(page, `${index} failed to load photo`)
         }
+      } else {
+        await this.unexpectedPageStateReporter.report(page, `${index} ${level} thumb icon not found`)
       }
+    } else {
+      await this.unexpectedPageStateReporter.report(page, `${index} ${level} galeria not found`)
     }
   }
 }
