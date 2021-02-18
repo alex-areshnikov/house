@@ -1,6 +1,7 @@
 import HouseApiClient from "./HouseApiClient.js"
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
 import lotFields from "./lotFields.js"
+import NavigatorWithRetry from "./NavigatorWithRetry.js"
 
 export default class LotScanner {
   constructor(logger, lotNumber) {
@@ -15,10 +16,10 @@ export default class LotScanner {
   scan = async (page) => {
     await this.logger.say(`Scanning ${this.url}`)
 
-    await page.goto(this.url, { waitUntil: "load" })
-    const lotDetailsInformation = await page.waitForSelector('.lot-details-information').catch(() => {})
+    const navigator = new NavigatorWithRetry(this.url, "#show-img")
+    const bigImageElement = await navigator.navigate(page)
 
-    if(lotDetailsInformation) {
+    if(bigImageElement) {
       const data = await this.collectData(page);
       await this.apiClient.send(data)
     } else {

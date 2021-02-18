@@ -3,7 +3,12 @@ import puppeteer from "puppeteer-extra"
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import copartLoginCredentials from "./copartLoginCredentials.js"
 
+const DEFAULT_TIMEOUT = 20000
+
 puppeteer.use(StealthPlugin())
+
+let launchOptions = { headless: true }
+if(process.env.DOCKERIZED) launchOptions["executablePath"] = "google-chrome-stable"
 
 const cookies_path = "./cookies.json"
 const url = "https://www.copart.com"
@@ -18,9 +23,9 @@ export default class Loginner {
   }
 
   createPage = async () => {
-    this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+    this.browser = await puppeteer.launch(launchOptions);
     const page = await this.browser.newPage()
-    await page.setDefaultTimeout(10000)
+    await page.setDefaultTimeout(DEFAULT_TIMEOUT)
     await page.setViewport({ width: 1711, height: 1101 });
 
     return page

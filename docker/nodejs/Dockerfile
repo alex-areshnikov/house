@@ -23,9 +23,19 @@ COPY package.json package.json
 COPY yarn.lock yarn.lock
 RUN yarn install
 
-COPY . .
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+COPY ./screenshots ./screenshots
+
+# Add user so we don't need --no-sandbox.
+RUN groupadd -r runner && useradd -r -g runner -G audio,video runner \
+    && chown -R runner:runner /var/www/house/node_modules /var/www/house/screenshots
 
 # Add a script to be executed every time the container starts.
 COPY docker/nodejs/entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
+
+COPY ./nodejs ./nodejs
+
+USER runner

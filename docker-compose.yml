@@ -58,6 +58,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/nodejs/Dockerfile
+    security_opt:
+      - seccomp=./docker/chrome.json
     depends_on:
       - app
 

@@ -1,5 +1,8 @@
 import HouseApiClient from "./HouseApiClient.js"
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
+import NavigatorWithRetry from "./NavigatorWithRetry.js"
+
+const LEVEL_LIMIT = 3
 
 export default class PhotosCollector {
   constructor(logger, lotNumber) {
@@ -15,14 +18,19 @@ export default class PhotosCollector {
     const photoUrls = [];
     await this.logger.say("Collecting photos")
 
-    await page.goto(this.url, { waitUntil: "load" })
+    const navigator = new NavigatorWithRetry(this.url, "#show-img")
+    const bigImageElement = await navigator.navigate(page)
 
-    for(let index = 0; index < 10; index++) {
-      photoUrls.push(await this.collectPhoto(page, index))
+    if(bigImageElement) {
+      for(let index = 0; index < 10; index++) {
+        photoUrls.push(await this.collectPhoto(page, index))
+      }
+
+      const data = { lot_number: this.lotNumber, photo_urls: photoUrls };
+      await this.apiClient.send(data)
+    } else {
+      await this.unexpectedPageStateReporter.report(page, "Lot not found")
     }
-
-    const data = { lot_number: this.lotNumber, photo_urls: photoUrls };
-    await this.apiClient.send(data)
   }
 
   collectPhoto = async (page, index, level = 0) => {
@@ -41,7 +49,7 @@ export default class PhotosCollector {
 
         if(mainPhoto) {
           return(await mainPhoto.evaluate(el => el.getAttribute("sp-url")))
-        } else if(level < 3) {
+        } else if(level < LEVEL_LIMIT) {
           await this.logger.warn(`Retry ${level+1} photo ${index}`)
           await page.reload({ waitUntil: "load" })
           return(await this.collectPhoto(page, index, level + 1))
