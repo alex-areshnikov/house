@@ -1,9 +1,9 @@
 module Copart
-  class ScannersController < ::Copart::ApplicationController
+  class CommandsController < ::Copart::ApplicationController
     def show
       copart_lot = find_lot
       # copart_lot.scan!
-      ::Copart::NodeCommandSender.scan_lot(copart_lot.lot_number)
+      ::Copart::NodeCommandSender.command_with_lot_number(params[:command], copart_lot.lot_number)
 
       redirect_to copart_lots_path
     end

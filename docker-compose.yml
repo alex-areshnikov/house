@@ -62,6 +62,8 @@ services:
       - seccomp=./docker/chrome.json
     depends_on:
       - app
+    environment:
+      DOCKERIZED: "true"
 
 #  grafana:
 #    image: grafana/grafana

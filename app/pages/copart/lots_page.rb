@@ -8,7 +8,8 @@ module Copart
     end
 
     def lots_ransack
-      ::CopartLot.order(:sale_date, :created_at).ransack(ransack_query)
+      copart_lot_base_relation = ransack_query.present? ? ::CopartLot : ::CopartLot.scheduled_or_future
+      copart_lot_base_relation.order(:sale_date, :created_at).ransack(ransack_query)
     end
 
     def lots
@@ -25,6 +26,10 @@ module Copart
 
     def available_makes
       available(:make)
+    end
+
+    def hide_past?
+      ransack_query.blank? || ransack_query["scheduled_or_future"].present?
     end
 
     def available_models

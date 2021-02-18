@@ -18,7 +18,5 @@ module House
 
     config.active_job.queue_name_prefix = "house_app_#{Rails.env}"
     config.active_job.queue_adapter = :sidekiq
-
-    config.time_zone = "Mountain Time (US & Canada)"
   end
 end

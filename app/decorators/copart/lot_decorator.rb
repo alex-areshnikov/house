@@ -35,11 +35,29 @@ module Copart
       return if name.blank?
       return FUTURE if sale_date.blank?
 
-      "#{sale_date} (#{distance_of_time_in_words(Time.current, sale_date)})"
+      "#{sale_date} (#{distance_of_time_in_words(DateTime.current, sale_date)}#{" ago" if sale_date_past?})"
+    end
+
+    def sale_date_text_class
+      return "text-success" if sale_date_today?
+
+      sale_date_past? ? "text-danger" : "text-secondary"
     end
 
     private
 
     attr_reader :lot
+
+    def sale_date_past?
+      return false if sale_date.blank?
+
+      sale_date < DateTime.current
+    end
+
+    def sale_date_today?
+      return false if sale_date.blank?
+
+      sale_date.to_date == Date.current
+    end
   end
 end

@@ -20,6 +20,11 @@
     .col-12.col-lg-3.align-self-end.justify-content-end
       = link_to "Reset", copart_lots_path, class: "btn btn-secondary mt-2 float-right"
       = form.submit class: "btn btn-primary mr-1 mt-2 float-right"
+  .row
+    .col-12.justify-content-end
+      .form-check.float-right
+        = form.check_box :scheduled_or_future, { class: "form-check-input", checked: @page.hide_past? }, true, false
+        = form.label :hide_past, for: "query_scheduled_or_future"
 
 .row
   - @page.decorated_lots.each do |lot|
@@ -39,10 +44,13 @@
                 span.pr-5.state-field
                   = lot.state_text
                 span.pr-1
-                  = link_to copart_scanner_path(lot.id), data: { turbolinks: false, confirm: "Are you sure?" } do
+                  = link_to copart_command_path(lot.id, command: ::Copart::NodeCommandSender::WATCH_AUCTION_COMMAND), data: { turbolinks: false, confirm: "Are you sure?" } do
+                    i.fas.fa-gavel
+                span.pr-1
+                  = link_to copart_command_path(lot.id, command: ::Copart::NodeCommandSender::SCAN_LOT_COMMAND), data: { turbolinks: false, confirm: "Are you sure?" } do
                     i.fas.fa-undo
-                = link_to copart_lot_path(lot.id), method: :delete, data: { confirm: "Are you sure?" } do
-                  i.fas.fa-trash
+                = link_to copart_lot_path(lot.id), method: :delete, class: "text-danger", data: { confirm: "Are you sure?" } do
+                  i.fas.fa-trash-alt
               .row
                 .col-3
                   label Name
@@ -59,7 +67,7 @@
               .row
                 .col-3
                   label Sale Date
-                .col-9 #{lot.sale_date_text}
+                .col-9 class="#{lot.sale_date_text_class}" #{lot.sale_date_text}
 
 .d-flex.justify-content-center.mt-3
   = paginate @page.lots

@@ -5,6 +5,11 @@ class CopartLot < ApplicationRecord
 
   validates :lot_number, presence: true, uniqueness: true
 
+  scope :past, ->{ where("sale_date < ?", DateTime.current) }
+  scope :future, ->{ where(sale_date: nil) }
+  scope :scheduled, ->{ where("sale_date >= ?", DateTime.current) }
+  scope :scheduled_or_future, ->{ scheduled.or(future) }
+
   aasm do
     state :initialized, initial: true
     state :scan_requested
@@ -24,5 +29,9 @@ class CopartLot < ApplicationRecord
     event :scan_complete do
       transitions from: :scanning, to: :scanned
     end
+  end
+
+  def self.ransackable_scopes(_)
+    %w(scheduled_or_future)
   end
 end
