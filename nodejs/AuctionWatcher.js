@@ -46,9 +46,19 @@ export default class AuctionWatcher {
     const frame = await this.auctionFrame(page)
 
     if(frame){
+      await this.adjustAuctionWindow(page, frame)
       await this.processFrame(page, frame)
     } else {
       await this.unexpectedPageStateReporter.report(page, "Frame not found")
+    }
+  }
+
+  adjustAuctionWindow = async (page, frame) => {
+    const notActiveMegaViewButton = await frame.waitForSelector('span.nav-option-on[data-uname="showMegaView"]').catch(() => {})
+
+    if(notActiveMegaViewButton) {
+      await notActiveMegaViewButton.click()
+      await page.waitForTimeout(1000)
     }
   }
 
@@ -66,9 +76,9 @@ export default class AuctionWatcher {
     const actionPageExists = await frame.waitForSelector('.widget').catch(() => {})
 
     if(actionPageExists) {
-      if(await this.processTargetNumber(frame)) {
+      if(await this.processTargetNumber(page, frame)) {
         do {
-          await this.processCurrentNumber(frame)
+          await this.processCurrentNumber(page, frame)
           if(this.auctionVehicleNumbersProcessor.isMatch()) { await this.auctionVehiclePriceProcessor.process(frame) }
           await page.waitForTimeout(ONE_SECOND)
         } while (this.auctionVehicleNumbersProcessor.isCurrentBeforeOrMatchTarget()
@@ -87,7 +97,7 @@ export default class AuctionWatcher {
     }
   }
 
-  processCurrentNumber = async (frame) => {
+  processCurrentNumber = async (page, frame) => {
     const currentNumberElement = await frame.waitForSelector('.auction-wrapper-MEGA span[data-uname="lot-details-value"]').catch(() => {})
 
     if(currentNumberElement) {
@@ -96,19 +106,21 @@ export default class AuctionWatcher {
       await this.auctionVehicleNumbersProcessor.report()
     } else {
       await this.auctionVehicleNumbersProcessor.currentNotFound()
-      await this.unexpectedPageStateReporter.report(frame, "Current vehicle number not found")
+      await this.unexpectedPageStateReporter.report(page, "Current vehicle number not found")
     }
   }
 
-  processTargetNumber = async (frame) => {
-    const targetNumberElement = await frame.waitForSelector('.megaFutureLotHeaderWrapper span[data-uname="lot-details-value"]').catch(() => {})
+  processTargetNumber = async (page, frame) => {
+    const lotLink = await frame.waitForSelector(`a[href="${this.url}"]`).catch(() => {})
 
-    if(targetNumberElement) {
-      const targetNumber = await targetNumberElement.evaluate(element => element.textContent.trim())
+    if(lotLink) {
+      const trElement = (await lotLink.$x('ancestor::tr'))[0];
+      const targetNumber = await trElement.$eval("span:last-child", element => element.textContent.trim())
+
       await this.auctionVehicleNumbersProcessor.processTarget(targetNumber)
       return true
     } else {
-      await this.unexpectedPageStateReporter.report(frame, "Target vehicle number not found")
+      await this.unexpectedPageStateReporter.report(page, "Target vehicle number not found")
       return false
     }
   }

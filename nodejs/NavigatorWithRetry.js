@@ -6,7 +6,7 @@ export default class NavigatorWithRetry {
   }
 
   navigate = async (page) => {
-    await page.goto(this.url, { waitUntil: "networkidle0"})
+    await page.goto(this.url, { waitUntil: "networkidle2"})
 
     let result = await page.waitForSelector(this.selector, { timeout: 2000 }).catch(() => {})
     if(!result) result = await this.retryNavigation(page)
@@ -17,7 +17,7 @@ export default class NavigatorWithRetry {
   retryNavigation = async (page, level = 0) => {
     if(level >= this.retryCount) return null
 
-    await page.reload({ waitUntil: "networkidle0"})
+    await page.reload({ waitUntil: "networkidle2"})
 
     let result = await page.waitForSelector(this.selector, { timeout: (2000 + (level * 2000)) }).catch(() => {})
     if(!result) result = await this.retryNavigation(page, level + 1)

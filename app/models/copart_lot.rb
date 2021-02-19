@@ -5,9 +5,9 @@ class CopartLot < ApplicationRecord
 
   validates :lot_number, presence: true, uniqueness: true
 
-  scope :past, ->{ where("sale_date < ?", DateTime.current) }
+  scope :past, ->{ where("sale_date < ?", DateTime.current.beginning_of_day) }
   scope :future, ->{ where(sale_date: nil) }
-  scope :scheduled, ->{ where("sale_date >= ?", DateTime.current) }
+  scope :scheduled, ->{ where("sale_date >= ?", DateTime.current.beginning_of_day) }
   scope :scheduled_or_future, ->{ scheduled.or(future) }
 
   aasm do
