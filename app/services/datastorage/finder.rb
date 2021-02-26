@@ -1,12 +1,19 @@
 module Datastorage
   class Finder
     FINDERS = {
-      copart_lot: ->(attributes) { ::CopartLot.where(lot_number: attributes["id"] || attributes["lot_number"]) }
+      copart_lot: ->(attributes) { ::CopartLot.where(lot_number: attributes["id"] || attributes["lot_number"]) },
+      scheduled_copart_lots: ->(_) { ::CopartLot.scheduled_or_future }
     }
 
-    def initialize(target_object, attributes)
+    def initialize(target_object, attributes = {})
       @target_object = target_object
       @attributes = attributes
+    end
+
+    def find_each
+      FINDERS.fetch(target_object).call(attributes).find_each do |record|
+        yield record
+      end
     end
 
     def find

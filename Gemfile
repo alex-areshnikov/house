@@ -78,3 +78,5 @@ gem "fog-aws", "~> 3.8"
 gem "rspec-its", "~> 1.3"
 
 gem "ransack", "~> 2.4"
+
+gem "sidekiq-scheduler", "~> 3.0"

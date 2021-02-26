@@ -4,7 +4,7 @@ import AuctionVehiclePriceProcessor from "./AuctionVehiclePriceProcessor.js"
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
 
 const AUCTION_FRAME_NAME = "iAuction5"
-const ONE_SECOND = 1000
+const HALF_SECOND = 500
 
 export default class AuctionWatcher {
   constructor(logger, lotNumber) {
@@ -80,7 +80,7 @@ export default class AuctionWatcher {
         do {
           await this.processCurrentNumber(page, frame)
           if(this.auctionVehicleNumbersProcessor.isMatch()) { await this.auctionVehiclePriceProcessor.process(frame) }
-          await page.waitForTimeout(ONE_SECOND)
+          await page.waitForTimeout(HALF_SECOND)
         } while (this.auctionVehicleNumbersProcessor.isCurrentBeforeOrMatchTarget()
                   && !this.closeRequested && !this.auctionVehiclePriceProcessor.isSold());
 

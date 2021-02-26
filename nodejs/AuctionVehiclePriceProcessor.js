@@ -41,7 +41,7 @@ export default class AuctionVehiclePriceProcessor {
   }
 
   processPriceChange = (price) => {
-    // console.error(`[${this.lotNumber}] ${price}`)
+    console.error(`[${this.lotNumber}] ${price}`)
     // TODO Send price
   }
 }

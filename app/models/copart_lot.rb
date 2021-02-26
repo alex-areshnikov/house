@@ -1,13 +1,15 @@
 class CopartLot < ApplicationRecord
+  AUCTION_DURATION_HOURS = 4.hours
+
   include AASM
 
   has_many :copart_lot_photos, dependent: :destroy
 
   validates :lot_number, presence: true, uniqueness: true
 
-  scope :past, ->{ where("sale_date < ?", DateTime.current.beginning_of_day) }
+  scope :past, ->{ where("sale_date < ?", DateTime.current - AUCTION_DURATION_HOURS) }
   scope :future, ->{ where(sale_date: nil) }
-  scope :scheduled, ->{ where("sale_date >= ?", DateTime.current.beginning_of_day) }
+  scope :scheduled, ->{ where("sale_date >= ?", DateTime.current - AUCTION_DURATION_HOURS) }
   scope :scheduled_or_future, ->{ scheduled.or(future) }
 
   aasm do

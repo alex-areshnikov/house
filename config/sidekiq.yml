@@ -4,3 +4,8 @@
   - default
   - house_app_development_default
   - house_app_production_default
+
+#:schedule:
+#  rescan_lots:
+#    cron: '0 0 */4 * * *'   # Runs every 4 hours
+#    class: "::Copart::RescanLotsJob"
