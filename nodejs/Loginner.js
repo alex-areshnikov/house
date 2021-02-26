@@ -22,8 +22,11 @@ export default class Loginner {
     this.cookies = null;
   }
 
-  createPage = async () => {
+  init = async () => {
     this.browser = await puppeteer.launch(launchOptions);
+  }
+
+  createPage = async () => {
     const page = await this.browser.newPage()
     await page.setDefaultTimeout(DEFAULT_TIMEOUT)
     await page.setViewport({ width: 1711, height: 1101 });

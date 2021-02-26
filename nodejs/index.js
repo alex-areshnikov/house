@@ -1,6 +1,6 @@
 import redis from "redis";
 import ApiLogger from './ApiLogger.js';
-import CommandProcessor from "./CommandProcessor.js"
+import MessagesProcessor from "./MessagesProcessor.js";
 
 const channelName = "house_node_channel"
 const loggerName = "copart-watcher"
@@ -11,20 +11,16 @@ const redis_config = {
 
 const logger = new ApiLogger(loggerName);
 const redisClient = redis.createClient(redis_config);
-const commandProcessor = new CommandProcessor(logger);
 
-redisClient.setMaxListeners(20);
+const messagesProcessor = new MessagesProcessor(logger)
+await messagesProcessor.init();
 
 redisClient.on("message", async (_, message) => {
-    await logger.say(`Starting browser routine ${message}`)
-
-    const data = JSON.parse(message)
-    await commandProcessor.process(data)
-
-    await logger.say(`Completed browser routine ${message}`)
+    await messagesProcessor.add(message)
 })
 
 redisClient.subscribe(channelName);
+await messagesProcessor.process()
 
 process.on('uncaughtException', async (error) => {
     console.error(error)

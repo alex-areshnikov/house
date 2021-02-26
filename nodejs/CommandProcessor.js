@@ -11,11 +11,24 @@ const KNOWN_COMMANDS = {
   closeAuction: "close-auction"
 }
 
+const QUEUE_COMMAND_TYPE = 1
+const SPAWN_COMMAND_TYPE = 2
+
+const COMMANDS_TYPES = {}
+COMMANDS_TYPES[KNOWN_COMMANDS.scanLot] = QUEUE_COMMAND_TYPE
+COMMANDS_TYPES[KNOWN_COMMANDS.collectLotPhotos] = QUEUE_COMMAND_TYPE
+COMMANDS_TYPES[KNOWN_COMMANDS.watchAuction] = SPAWN_COMMAND_TYPE
+COMMANDS_TYPES[KNOWN_COMMANDS.closeAuction] = SPAWN_COMMAND_TYPE
+
 export default class CommandProcessor {
   constructor(logger) {
     this.logger = logger;
     this.openedAuctions = {};
     this.loginner = new Loginner(logger);
+  }
+
+  init = async () => {
+    await this.loginner.init();
   }
 
   process = async (data) => {
@@ -39,6 +52,14 @@ export default class CommandProcessor {
       default:
         await this.logger.warn(`Unrecognized command ${data.command}.`);
     }
+  }
+
+  isCommandTypeQueue = (data) => {
+    return COMMANDS_TYPES[data.command] === QUEUE_COMMAND_TYPE
+  }
+
+  isCommandTypeSpawn = (data) => {
+    return COMMANDS_TYPES[data.command] === SPAWN_COMMAND_TYPE
   }
 
   loggedInPage = async () => {
