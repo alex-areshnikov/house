@@ -1,4 +1,5 @@
 import CommandProcessor from "./CommandProcessor.js";
+import { spawn } from "child_process";
 
 const IDLE_DURATION_MS = 1000
 
@@ -39,7 +40,8 @@ export default class MessagesProcessor {
     }
 
     if(this.commandProcessor.isCommandTypeSpawn(data)) {
-      // TODO spawn
+      this.spawnAuctionWatcher(message)
+
       await this.say(`Message received and spawned in a separate process ${message}`)
       return
     }
@@ -53,5 +55,19 @@ export default class MessagesProcessor {
 
   idle = async () => {
     return new Promise(resolve => setTimeout(resolve, IDLE_DURATION_MS));
+  }
+
+  spawnAuctionWatcher = (message) => {
+    const data = JSON.parse(message)
+
+    const auctionWatcher = spawn("yarn", ["auction_watcher", message]);
+
+    auctionWatcher.stderr.on('data', (processData) => {
+      this.logger.error(`Auction watcher ${data.lot_number} stderr: ${processData}`);
+    });
+
+    auctionWatcher.on('close', (code) => {
+      this.logger.say(`Auction watcher ${data.lot_number} exited with code ${code}`);
+    });
   }
 }

@@ -31,6 +31,10 @@ export default class CommandProcessor {
     await this.loginner.init();
   }
 
+  exit = async (exitCode) => {
+   await this.loginner.exit(exitCode);
+  }
+
   process = async (data) => {
     switch (data.command) {
       case KNOWN_COMMANDS.scanLot:
@@ -114,39 +118,22 @@ export default class CommandProcessor {
     const page = await this.loggedInPage()
     if(!page) return
 
-    if(this.openedAuctions[lotNumber]) {
-      this.logger.warn(`Auctioneer is already spawned for ${lotNumber}`);
-      return
-    }
-
-    const auctionLogger = new ApiLogger(`watch-auction-lot-${lotNumber}`);
     let auctionError = false
 
     await (async () => {
-      const auctionWatcher = new AuctionWatcher(auctionLogger, lotNumber);
-      this.openedAuctions[lotNumber] = auctionWatcher
-
+      const auctionWatcher = new AuctionWatcher(this.logger, lotNumber);
       await auctionWatcher.watch(page)
     })().catch(error => auctionError = error)
 
     if(auctionError) {
       console.error(auctionError)
-      await auctionLogger.error(auctionError.message, auctionError.stack, auctionError.constructor.name);
+      await this.logger.error(auctionError.message, auctionError.stack, auctionError.constructor.name);
     }
-
-    delete this.openedAuctions[lotNumber]
 
     await page.close();
   }
 
   performCloseAuction = async (lotNumber) => {
-    const auctionWatcher = this.openedAuctions[lotNumber]
-
-    if(!auctionWatcher) {
-      await this.logger.warn(`Can't close. Auctioneer is not found for ${lotNumber}`);
-      return
-    }
-
-    await auctionWatcher.requestClose()
+    // await auctionWatcher.requestClose()
   }
 }

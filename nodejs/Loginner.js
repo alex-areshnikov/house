@@ -26,6 +26,12 @@ export default class Loginner {
     this.browser = await puppeteer.launch(launchOptions);
   }
 
+  exit = async (exitCode) => {
+    await this.browser.close(() => {
+      process.exit(exitCode)
+    })
+  }
+
   createPage = async () => {
     const page = await this.browser.newPage()
     await page.setDefaultTimeout(DEFAULT_TIMEOUT)

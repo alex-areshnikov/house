@@ -17,7 +17,8 @@
     "turbolinks": "^5.2.0"
   },
   "scripts": {
-    "copart_watcher": "node --trace-warnings nodejs/index.js"
+    "copart_watcher": "node --trace-warnings nodejs/index.js",
+    "auction_watcher": "node --trace-warnings nodejs/indexAuction.js"
   },
   "version": "0.1.0",
   "devDependencies": {

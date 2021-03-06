@@ -2,6 +2,8 @@ module Copart
   class LotsPage
     PER_PAGE = 10
 
+    attr_reader :page, :ransack_query
+
     def initialize(page, ransack_query)
       @page = page
       @ransack_query = ransack_query
@@ -39,8 +41,6 @@ module Copart
     end
 
     private
-
-    attr_reader :page, :ransack_query
 
     def available(field)
       [nil] + ::CopartLot.distinct(field).order(field).pluck(field).compact

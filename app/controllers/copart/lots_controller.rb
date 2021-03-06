@@ -28,7 +28,8 @@ module Copart
 
     def destroy
       CopartLot.find(params[:id]).destroy
-      redirect_to copart_lots_path
+
+      redirect_to copart_lots_path(query: params.permit![:query])
     end
 
     private

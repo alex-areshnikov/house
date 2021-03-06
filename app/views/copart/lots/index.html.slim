@@ -49,7 +49,7 @@
                 span.pr-1
                   = link_to copart_command_path(lot.id, command: ::Copart::NodeCommandSender::SCAN_LOT_COMMAND), data: { turbolinks: false, confirm: "Are you sure?" } do
                     i.fas.fa-undo
-                = link_to copart_lot_path(lot.id), method: :delete, class: "text-danger", data: { confirm: "Are you sure?" } do
+                = link_to copart_lot_path(lot.id, query: params.permit![:query]), method: :delete, class: "text-danger", data: { confirm: "Are you sure?" } do
                   i.fas.fa-trash-alt
               .row
                 .col-3
