@@ -47,6 +47,10 @@ export default class Loginner {
     return this.successfulLogin;
   }
 
+  resetLogin = () => {
+    this.successfulLogin = false
+  }
+
   isSuccess = () => {
     return this.successfulLogin
   }

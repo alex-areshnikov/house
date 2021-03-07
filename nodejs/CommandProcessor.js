@@ -57,6 +57,8 @@ export default class CommandProcessor {
       default:
         await this.logger.warn(`Unrecognized command ${data.command}.`);
     }
+
+    this.loginner.resetLogin()
   }
 
   isCommandTypeQueue = (data) => {
