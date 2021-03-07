@@ -10,7 +10,7 @@ module Copart
     end
 
     def lots_ransack
-      copart_lot_base_relation = ransack_query.present? ? ::CopartLot : ::CopartLot.scheduled_or_future
+      copart_lot_base_relation = ransack_query.present? ? ::CopartLot.scanned : ::CopartLot.scanned.scheduled_or_future
       copart_lot_base_relation.order(:sale_date, :created_at).ransack(ransack_query)
     end
 
@@ -18,8 +18,36 @@ module Copart
       lots_ransack.result.page(page).per(PER_PAGE)
     end
 
-    def decorated_lots
+    def main_lots
       lots.map { ::Copart::LotDecorator.new(_1) }
+    end
+
+    def lot_numbers_awaiting_scan
+      ::CopartLot.added.pluck(:lot_number).join(", ")
+    end
+
+    def lot_numbers_scanning
+      ::CopartLot.scanning.pluck(:lot_number).join(", ")
+    end
+
+    def lot_numbers_erred
+      ::CopartLot.erred.pluck(:lot_number).join(", ")
+    end
+
+    def info_card?
+      scanning? || awaiting_scan?
+    end
+
+    def error_card?
+      ::CopartLot.erred.exists?
+    end
+
+    def scanning?
+      ::CopartLot.scanning.exists?
+    end
+
+    def awaiting_scan?
+      ::CopartLot.added.exists?
     end
 
     def available_years

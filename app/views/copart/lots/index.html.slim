@@ -3,6 +3,20 @@
   = link_to new_copart_lot_path, class: "btn btn-primary btn-circle btn-lg" do
     i.fas.fa-plus
 
+- if @page.info_card?
+  .card.border-left-info.p-3.mb-3
+    - if @page.awaiting_scan?
+      span Awaiting scan lots: #{@page.lot_numbers_awaiting_scan}
+    - if @page.scanning?
+      span Scanning lots: #{@page.lot_numbers_scanning}
+
+- if @page.error_card?
+  .card.border-left-danger.p-3.mb-3
+    .div
+      | Erred lots: #{@page.lot_numbers_erred}
+      = link_to "Reset", copart_lots_path(reset_erred: 1), class: "btn-primary btn btn-sm float-right"
+      = link_to "Delete", copart_lots_path(delete_erred: 1), class: "btn-danger btn btn-sm float-right"
+
 = search_form_for @page.lots_ransack do |form|
   .row.form-group
     .col-12.col-md-6.col-lg-3
@@ -27,7 +41,7 @@
         = form.label :hide_past, for: "query_scheduled_or_future"
 
 .row
-  - @page.decorated_lots.each do |lot|
+  - @page.main_lots.each do |lot|
     .col-12 data-lot-id="#{lot.id}"
       .card.shadow.mb-2
         .card-body

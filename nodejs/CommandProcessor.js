@@ -3,6 +3,7 @@ import LotScanner from "./LotScanner.js";
 import AuctionWatcher from "./AuctionWatcher.js";
 import Loginner from "./Loginner.js";
 import PhotosCollector from "./PhotosCollector.js"
+import HouseApiClient from "./HouseApiClient.js";
 
 const KNOWN_COMMANDS = {
   scanLot: "scan-lot",
@@ -88,6 +89,8 @@ export default class CommandProcessor {
 
     if(scanError) {
       console.error(scanError)
+      const apiClient = new HouseApiClient("lot_scanner");
+      await apiClient.send({ lot_number: lotNumber, error: scanError.message})
       await scanLogger.error(scanError.message, scanError.stack, scanError.constructor.name);
     }
 

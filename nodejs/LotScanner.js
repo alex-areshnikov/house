@@ -15,6 +15,7 @@ export default class LotScanner {
 
   scan = async (page) => {
     await this.logger.say(`Scanning ${this.url}`)
+    await this.apiClient.send({ lot_number: this.lotNumber, scan_start: "1" })
 
     const navigator = new NavigatorWithRetry(this.url, "#show-img")
     const bigImageElement = await navigator.navigate(page)
@@ -24,6 +25,7 @@ export default class LotScanner {
       await this.apiClient.send(data)
     } else {
       await this.unexpectedPageStateReporter.report(page, "Lot not found")
+      await this.apiClient.send({ lot_number: this.lotNumber, error: "Lot not found" })
     }
   }
 

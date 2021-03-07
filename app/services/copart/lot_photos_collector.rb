@@ -12,7 +12,7 @@ module Copart
       return if copart_lot.nil?
       return if copart_lot.copart_lot_photos.count >= COPART_LOT_PHOTOS_COUNT
 
-      ::Copart::NodeCommandSender.collect_lot_photos(lot_number)
+      ::Copart::NodeCommandSender.new(copart_lot).collect_lot_photos
     end
 
     private

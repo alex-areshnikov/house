@@ -7,6 +7,9 @@ module Copart
     end
 
     def index
+      ::Copart::ErredLotsProcessor.new.reset if params[:reset_erred].present?
+      ::Copart::ErredLotsProcessor.new.delete if params[:delete_erred].present?
+
       @page = ::Copart::LotsPage.new(params[:page], params[:query])
     end
 
@@ -17,8 +20,7 @@ module Copart
     def create
       @lot = CopartLot.new(copart_lot_params)
       if @lot.save
-        @lot.scan!
-        ::Copart::NodeCommandSender.scan_lot(@lot.lot_number)
+        ::Copart::NodeCommandSender.new(@lot).scan_lot
 
         redirect_to copart_lots_path
       else
