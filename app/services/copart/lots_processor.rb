@@ -1,5 +1,13 @@
 module Copart
   class LotsProcessor
+    def collect_missing_photos
+      missing_photos_lots { ::Copart::NodeCommandSender.new(_1).collect_lot_photos }
+    end
+
+    def rescan_awaiting
+      awaiting_lots { ::Copart::NodeCommandSender.new(_1).scan_lot }
+    end
+
     def reset_erred
       erred_lots { reset _1 }
     end
@@ -17,6 +25,14 @@ module Copart
     end
 
     private
+
+    def missing_photos_lots
+      ::Datastorage::Finder.new(:missing_photos_copart_lots).find_each { yield _1 }
+    end
+
+    def awaiting_lots
+      ::Datastorage::Finder.new(:awaiting_copart_lots).find_each { yield _1 }
+    end
 
     def erred_lots
       ::Datastorage::Finder.new(:erred_copart_lots).find_each { yield _1 }

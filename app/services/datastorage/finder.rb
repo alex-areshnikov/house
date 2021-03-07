@@ -5,7 +5,8 @@ module Datastorage
       scheduled_copart_lots: ->(_) { ::CopartLot.scheduled_or_future },
       awaiting_copart_lots: ->(_) { ::CopartLot.added },
       scanning_copart_lots: ->(_) { ::CopartLot.scanning },
-      erred_copart_lots: ->(_) { ::CopartLot.erred }
+      erred_copart_lots: ->(_) { ::CopartLot.erred },
+      missing_photos_copart_lots: ->(_) { ::CopartLot.missing_photos }
     }
 
     def initialize(target_object, attributes = {})

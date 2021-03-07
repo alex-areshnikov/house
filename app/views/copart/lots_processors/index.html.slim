@@ -1,0 +1,12 @@
+.d-flex.justify-content-end.mb-2
+  h1.flex-grow-1 Copart Lots Maintenance
+
+.content
+  .mb-2
+    = link_to "Rescan awaiting (#{@page.awaiting_count})", copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_AWAITING), class: "btn btn-primary"
+  .mb-2
+    = link_to "Collect missed photos (#{@page.missing_photos_count})", copart_lots_processors_path(process: Copart::LotsProcessorsPage::COLLECT_MISSING_PHOTOS), class: "btn btn-primary"
+  .mb-2
+    = link_to "Rescan erred (#{@page.erred_count})", copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_ERRED), class: "btn btn-primary"
+
+

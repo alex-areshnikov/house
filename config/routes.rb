@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   namespace :copart do
     resources :lots, only: %i[index create new destroy]
+    resources :lots_processors, only: %i[index]
     resources :commands, only: %i[show]
   end
 
