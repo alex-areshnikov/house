@@ -1,5 +1,3 @@
 #!/bin/bash
 
-docker-compose down
-git pull
-docker-compose up -d --build
+docker-compose down && git pull && docker-compose up -d --build
