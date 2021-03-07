@@ -52,22 +52,34 @@
                 = link_to copart_lot_path(lot.id, query: params.permit![:query]), method: :delete, class: "text-danger", data: { confirm: "Are you sure?" } do
                   i.fas.fa-trash-alt
               .row
-                .col-3
+                .col-2
                   label Name
-                .col-9
+                .col-4
                   = link_to(lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank") if lot.name.present?
+                .col-2
+                  label Doc Type
+                .col-4 #{lot.doc_type}
               .row
-                .col-3
+                .col-2
                   label VIN
-                .col-9 #{lot.vin}
+                .col-4 #{lot.vin}
+                .col-2
+                  label Odometer
+                .col-3 #{lot.odometer}
               .row
-                .col-3
+                .col-2
                   label Damage
-                .col-9 #{lot.damage}
+                .col-4 #{lot.damage}
+                .col-2
+                  label Engine Type
+                .col-4 #{lot.engine_type}
               .row
-                .col-3
+                .col-2
                   label Sale Date
-                .col-9 class="#{lot.sale_date_text_class}" #{lot.sale_date_text}
+                .col-4 class="#{lot.sale_date_text_class}" #{lot.sale_date_text}
+                .col-2
+                  label Location
+                .col-4 #{lot.location}
 
 .d-flex.justify-content-center.mt-3
   = paginate @page.lots

@@ -1,7 +1,8 @@
 module Copart
   class LotDecorator
     include ActionView::Helpers::DateHelper
-    delegate :id, :lot_number, :name, :vin, :primary_damage, :secondary_damage, :sale_date, :aasm, to: :lot
+    delegate :id, :lot_number, :name, :vin, :primary_damage, :secondary_damage, :sale_date, :doc_type,
+             :odometer, :engine_type, :location, :aasm, to: :lot
 
     FUTURE = "Future".freeze
 

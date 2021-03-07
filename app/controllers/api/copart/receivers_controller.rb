@@ -9,8 +9,8 @@ module Api
 
       def receiver_params
         params.permit(:communicator, data: [
-          :lot_number, :name, :vin, :primary_damage, :secondary_damage, :sale_date, :timestamp, :message, :error,
-          :stack, :level, :source, photo_urls: []
+          :lot_number, :name, :vin, :primary_damage, :secondary_damage, :sale_date, :doc_type, :odometer, :engine_type,
+          :location, :timestamp, :message, :error, :stack, :level, :source, photo_urls: []
         ])
       end
     end

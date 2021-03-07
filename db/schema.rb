@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_13_040441) do
+ActiveRecord::Schema.define(version: 2021_03_07_030143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,10 @@ ActiveRecord::Schema.define(version: 2021_02_13_040441) do
     t.integer "year"
     t.string "make"
     t.string "model"
+    t.string "doc_type"
+    t.string "odometer"
+    t.string "engine_type"
+    t.string "location"
   end
 
   create_table "holodilnic_sensors_data", force: :cascade do |t|

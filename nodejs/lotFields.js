@@ -6,4 +6,8 @@ export default [
   // { name: "estimated_retail_value", selector: "span[data-uname='lotdetailEstimatedretailvalue']" },
   { name: "sale_date", selector: "[data-uname='lotdetailSaleinformationsaledatevalue']" },
   // { name: "last_updated", selector: "span[data-uname='lotdetailSaleinformationlastupdatedvalue']" }
+  { name: "doc_type", selector: "[data-uname='lotdetailTitledescriptionvalue']" },
+  { name: "odometer", selector: "[data-uname='lotdetailOdometervalue']" },
+  { name: "engine_type", selector: "[data-uname='lotdetailEnginetype']" },
+  { name: "location", selector: "[data-uname='lotdetailSaleinformationlocationvalue']" },
 ]
