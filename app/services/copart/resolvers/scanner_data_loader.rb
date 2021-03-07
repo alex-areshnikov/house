@@ -30,7 +30,7 @@ module Copart
         data["model"] = parsed_vehicle_name.model
 
         ::Datastorage::Updater.new(:copart_lot, data).update_or_create
-        ::Copart::LotPhotosCollector.new(data["lot_number"]).call
+        ::Copart::LotPhotosCollector.new(copart_lot).call
 
         copart_lot.scan_complete! if copart_lot.present?
       end

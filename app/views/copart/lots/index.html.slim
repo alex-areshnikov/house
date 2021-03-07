@@ -12,10 +12,7 @@
 
 - if @page.error_card?
   .card.border-left-danger.p-3.mb-3
-    .div
-      | Erred lots: #{@page.lot_numbers_erred}
-      = link_to "Reset", copart_lots_path(reset_erred: 1), class: "btn-primary btn btn-sm float-right"
-      = link_to "Delete", copart_lots_path(delete_erred: 1), class: "btn-danger btn btn-sm float-right"
+    span Erred lots: #{@page.lot_numbers_erred}
 
 = search_form_for @page.lots_ransack do |form|
   .row.form-group

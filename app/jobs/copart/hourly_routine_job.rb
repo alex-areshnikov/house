@@ -1,5 +1,5 @@
 module Copart
-  class RescanLotsJob < ApplicationJob
+  class HourlyRoutineJob < ApplicationJob
     queue_as :default
 
     def perform

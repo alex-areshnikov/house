@@ -7,9 +7,6 @@ module Copart
     end
 
     def index
-      ::Copart::ErredLotsProcessor.new.reset if params[:reset_erred].present?
-      ::Copart::ErredLotsProcessor.new.delete if params[:delete_erred].present?
-
       @page = ::Copart::LotsPage.new(params[:page], params[:query])
     end
 

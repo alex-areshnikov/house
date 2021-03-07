@@ -15,7 +15,6 @@ class CopartLot < ApplicationRecord
   scope :scanning, ->{ where(aasm_state: :scanning) }
   scope :erred, ->{ where(aasm_state: :erred) }
   scope :scanned, ->{ where.not(aasm_state: [:initialized, :scan_requested, :scanning]) }
-  scope :updated_more_than_x_minutes, ->(minutes){ where("updated_at < ?", Time.current - minutes.minutes)}
 
   aasm do
     state :initialized, initial: true
@@ -25,7 +24,7 @@ class CopartLot < ApplicationRecord
     state :erred
 
     event :scan do
-      transitions from: [:initialized, :scanned, :scan_requested], to: :scan_requested
+      transitions from: [:erred, :initialized, :scanned, :scan_requested], to: :scan_requested
     end
 
     event :scan_start do

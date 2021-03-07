@@ -5,11 +5,11 @@
   - house_app_development_default
   - house_app_production_default
 
-:schedule:
-#  rescan_lots:
-#    cron: '0 0 */4 * * *'   # Runs every 4 hours
-#    class: "::Copart::RescanLotsJob"
+#:schedule:
+#  copart_hourly_routine_job:
+#    cron: '0 55 */1 * * *'   # Runs every 1 hour at 55 minutes
+#    class: "::Copart::HourlyRoutineJob"
 
-  ten_min_routine_job:
-    cron: '0 */10 * * * *'   # Runs every 10 minutes
-    class: "::Copart::TenMinRoutineJob"
+#  copart_ten_minutes_routine_job:
+#      cron: '0 */10 * * * *'   # Runs every 10 minutes
+#      class: "::Copart::TenMinutesRoutineJob"
