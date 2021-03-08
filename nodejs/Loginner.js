@@ -2,6 +2,8 @@ import fs from 'fs'
 import puppeteer from "puppeteer-extra"
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import copartLoginCredentials from "./copartLoginCredentials.js"
+import NavigatorWithRetry from "./NavigatorWithRetry.js"
+import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js";
 
 const DEFAULT_TIMEOUT = 20000
 
@@ -20,6 +22,7 @@ export default class Loginner {
     this.password = password;
     this.successfulLogin = false;
     this.cookies = null;
+    this.unexpectedPageStateReporter = new UnexpectedPageStateReporter(logger)
   }
 
   init = async () => {
@@ -76,30 +79,37 @@ export default class Loginner {
     await this.logger.say("Performing direct login...")
 
     const page = await this.createPage()
-    await page.goto(`${url}/login`, { waitUntil: "load" })
 
-    await page.waitForSelector('#username');
-    await page.waitForSelector('#password');
+    const navigator = new NavigatorWithRetry(`${url}/login`, "#username")
+    const usernameElement = await navigator.navigate(page)
 
-    await page.evaluate( () => document.getElementById("username").value = "")
-    await page.evaluate( () => document.getElementById("password").value = "")
+    if(usernameElement) {
+      await page.evaluate(() => document.getElementById("username").value = "")
+      await page.evaluate(() => document.getElementById("password").value = "")
 
-    await page.type('#username', credentials.username, {delay: 100});
-    await page.type('#password', credentials.password, {delay: 100});
+      await page.type('#username', credentials.username, {delay: 100});
+      await page.type('#password', credentials.password, {delay: 100});
 
-    await page.click('input[name=remember-me]', {delay: 100})
+      await page.click('input[name=remember-me]', {delay: 100})
 
-    await page.click('button[data-uname=loginSigninmemberbutton]', {delay: 100})
-    await page.waitForSelector('span.signout')
-      .then(() => { this.successfulLogin = true })
-      .catch(() => { this.successfulLogin = false })
+      await page.click('button[data-uname=loginSigninmemberbutton]', {delay: 100})
+      await page.waitForSelector('span.signout')
+        .then(() => {
+          this.successfulLogin = true
+        })
+        .catch(() => {
+          this.successfulLogin = false
+        })
 
-    if(this.successfulLogin) {
-      this.cookies = await page.cookies();
-      await this.storeCookies();
+      if (this.successfulLogin) {
+        this.cookies = await page.cookies();
+        await this.storeCookies();
+      } else {
+        await this.logger.warn("Direct login failed")
+        await page.screenshot({path: `screenshots/${Date.now()}_error_direct_login.png`})
+      }
     } else {
-      await this.logger.warn("Direct login failed")
-      await page.screenshot({path: `screenshots/${Date.now()}_error_direct_login.png`})
+      await this.unexpectedPageStateReporter.report(page, "Login page not found")
     }
 
     await page.close();
