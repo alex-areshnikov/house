@@ -29,7 +29,7 @@ COPY ./screenshots ./screenshots
 
 # Add user so we don't need --no-sandbox.
 RUN groupadd -r runner && useradd -r -g runner -G audio,video runner \
-    && chown -R runner:runner /var/www/house/node_modules /var/www/house/screenshots
+    && chown -R runner:runner /var/www/house /var/www/house/node_modules /var/www/house/screenshots
 
 # Add a script to be executed every time the container starts.
 COPY docker/nodejs/entrypoint.sh /usr/bin/
