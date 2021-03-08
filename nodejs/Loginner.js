@@ -12,7 +12,7 @@ puppeteer.use(StealthPlugin())
 let launchOptions = { headless: true }
 if(process.env.DOCKERIZED) launchOptions["executablePath"] = "google-chrome-stable"
 
-const cookies_path = "./cookies.json"
+const cookies_path = process.env.DOCKERIZED ? "/var/www/house/cookies.json" : "./cookies.json"
 const url = "https://www.copart.com"
 
 export default class Loginner {
