@@ -14,7 +14,7 @@ module Copart
       def attributes
         {
           level: "error",
-          source: self.class.name,
+          source: "incoming-data-resolver",
           description: "Bad incoming data: #{data}"
         }
       end

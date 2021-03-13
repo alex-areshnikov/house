@@ -1,5 +1,6 @@
 import axios from 'axios';
-import qs from 'qs';
+import FormData from 'form-data';
+import fs from 'fs';
 
 const host = process.env.DOCKERIZED ? "http://app:3000" : "http://localhost:3000"
 const url = "api/copart/receiver";
@@ -9,16 +10,23 @@ export default class HouseApiClient {
     this.communicator = communicator || "unknown";
   }
 
-  send = async (data) => {
-    const decorated_data = {
-      communicator: this.communicator,
-      data: data
+  send = async (data, filePath = null) => {
+    const form = new FormData();
+
+    form.append('communicator', this.communicator);
+
+    for( const key in data ) {
+      form.append(key, data[key]);
     }
 
-    await axios({
-      method: 'post',
-      url: `${host}/${url}`,
-      data: qs.stringify(decorated_data)
+    if(filePath) { form.append('file', fs.createReadStream(filePath)); }
+
+    await axios.post(`${host}/${url}`, form, {
+      headers: {
+        'accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Content-Type': `multipart/form-data; boundary=${form._boundary}`
+      }
     }).catch(error => {
       console.error(`[${this.communicator}] AXIOS failed ${error.message}`)
     })

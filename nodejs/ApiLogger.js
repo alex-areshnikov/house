@@ -6,29 +6,29 @@ export default class ApiLogger {
     this.api_client = new HouseApiClient("logger");
   }
 
-  say = async (message) => {
+  say = async (message, filePath = null) => {
     await this.api_client.send({
       level: "info",
       source: this.source,
       message: message
-    })
+    }, filePath)
   }
 
-  warn = async (message) => {
+  warn = async (message, filePath = null) => {
     await this.api_client.send({
       level: "warn",
       source: this.source,
       message: message
-    })
+    }, filePath)
   }
 
-  error = async (message, stack, type) => {
+  error = async (message, stack, type, filePath = null) => {
     await this.api_client.send({
       level: "error",
       source: this.source,
       error: type,
       message: message,
       stack: stack
-    })
+    }, filePath)
   }
 }

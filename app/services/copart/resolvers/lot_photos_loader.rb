@@ -2,7 +2,7 @@ module Copart
   module Resolvers
     class LotPhotosLoader
       def initialize(data)
-        @data = data["data"]
+        @data = data
       end
 
       def call

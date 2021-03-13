@@ -12,6 +12,10 @@
     = link_to "Rescan erred (#{@page.erred_count})",
             copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_ERRED), class: "btn btn-primary"
   .mb-2
+    = link_to "Reset scanning (#{@page.scanning_count})",
+            copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESET_SCANNING), class: "btn btn-primary"
+
+  .mb-2
     = link_to "Delete erred (#{@page.erred_count})",
             copart_lots_processors_path(process: Copart::LotsProcessorsPage::DELETE_ERRED), class: "btn btn-danger",
             data: { confirm: "Are you sure?" }

@@ -3,6 +3,7 @@ module Copart
     RESCAN_AWAITING = "rescan_awaiting".freeze
     RESCAN_ERRED = "rescan_erred".freeze
     DELETE_ERRED = "delete_erred".freeze
+    RESET_SCANNING = "reset_scanning".freeze
     COLLECT_MISSING_PHOTOS = "collect_missing_photos".freeze
 
     attr_reader :flash_notice_message
@@ -17,6 +18,7 @@ module Copart
       rescan_awaiting if process_item == RESCAN_AWAITING
       rescan_erred if process_item == RESCAN_ERRED
       delete_erred if process_item == DELETE_ERRED
+      reset_scanning if process_item == RESET_SCANNING
       collect_missing_photos if process_item == COLLECT_MISSING_PHOTOS
     end
 
@@ -30,6 +32,10 @@ module Copart
 
     def missing_photos_count
       ::CopartLot.missing_photos.count.keys.count
+    end
+
+    def scanning_count
+      ::CopartLot.scanning.count
     end
 
     private
@@ -47,6 +53,11 @@ module Copart
     def delete_erred
       @flash_notice_message = "Delete erred requested"
       @lots_processor.destroy_erred
+    end
+
+    def reset_scanning
+      @flash_notice_message = "Reset scanning requested"
+      @lots_processor.reset_scanning
     end
 
     def collect_missing_photos

@@ -1,3 +1,7 @@
 .highlight-background:hover {
     background-color: #ffa
 }
+
+.clickable {
+    cursor: pointer;
+}

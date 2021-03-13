@@ -7,7 +7,8 @@ module Copart
     }
 
     def self.for_communicator(data)
-      COMMUNICATOR_RESOLVERS.fetch(data["communicator"], ::Copart::Resolvers::BadIncomingDataResolver).new(data)
+      communicator = data.delete("communicator")
+      COMMUNICATOR_RESOLVERS.fetch(communicator, ::Copart::Resolvers::BadIncomingDataResolver).new(data)
     end
   end
 end

@@ -2,7 +2,7 @@ module Copart
   module Resolvers
     class ScannerDataLoader
       def initialize(data)
-        @data = data["data"]
+        @data = data
       end
 
       def call
