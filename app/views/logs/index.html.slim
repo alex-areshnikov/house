@@ -1,15 +1,8 @@
 h1 Logs
 
-- @page.logs.each do |log|
-  .row.border-bottom.highlight-background
-    .col-6.col-lg-3
-      = log.created_at
-      span class="#{@page.text_class(log)}"
-        = " [#{log.level.humanize}]"
-    .col-6.col-lg-2
-      = log.source
-    .col-12.col-lg-7
-      = log.description
+#logs-container
+  - @page.each_row do |log_row|
+    = log_row
 
 .d-flex.justify-content-center.mt-3
   = paginate @page.logs

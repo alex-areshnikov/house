@@ -6,7 +6,8 @@ module Copart
       end
 
       def call
-        ::Datastorage::Creator.new(:house_log, attributes).create
+        copart_lot = ::Datastorage::Creator.new(:house_log, attributes).create
+        ::ActionCable.server.broadcast("house_log_channel", ::LogsPage.new.log_row(copart_lot))
       end
 
       private
