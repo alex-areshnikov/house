@@ -24,7 +24,7 @@ export default class AuctionVehiclePriceProcessor {
   }
 
   price = async (frame) => {
-    const priceElement = await frame.waitForSelector('.auctionrunningdiv-MEGA text', { timeout: 100 }).catch(() => {})
+    const priceElement = await frame.waitForSelector('.auctionrunningdiv-MEGA text', { timeout: 200 }).catch(() => {})
 
     if(priceElement) {
       const price = await priceElement.evaluate(element => element.textContent.trim())

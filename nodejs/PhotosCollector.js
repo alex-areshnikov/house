@@ -26,7 +26,7 @@ export default class PhotosCollector {
         photoUrls.push(await this.collectPhoto(page, index))
       }
 
-      const data = { lot_number: this.lotNumber, photo_urls: photoUrls };
+      const data = { lot_number: this.lotNumber, photo_urls: JSON.stringify(photoUrls) };
       await this.apiClient.send(data)
     } else {
       await this.unexpectedPageStateReporter.report(page, "Lot not found")

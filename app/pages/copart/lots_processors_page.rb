@@ -2,6 +2,7 @@ module Copart
   class LotsProcessorsPage
     RESCAN_AWAITING = "rescan_awaiting".freeze
     RESCAN_ERRED = "rescan_erred".freeze
+    RESCAN_FUTURE = "rescan_future".freeze
     DELETE_ERRED = "delete_erred".freeze
     RESET_SCANNING = "reset_scanning".freeze
     COLLECT_MISSING_PHOTOS = "collect_missing_photos".freeze
@@ -17,6 +18,7 @@ module Copart
     def process
       rescan_awaiting if process_item == RESCAN_AWAITING
       rescan_erred if process_item == RESCAN_ERRED
+      rescan_future if process_item == RESCAN_FUTURE
       delete_erred if process_item == DELETE_ERRED
       reset_scanning if process_item == RESET_SCANNING
       collect_missing_photos if process_item == COLLECT_MISSING_PHOTOS
@@ -24,6 +26,10 @@ module Copart
 
     def awaiting_count
       ::CopartLot.added.count
+    end
+
+    def future_count
+      ::CopartLot.future.count
     end
 
     def erred_count
@@ -43,6 +49,11 @@ module Copart
     def rescan_awaiting
       @flash_notice_message = "Rescan awaiting requested"
       @lots_processor.rescan_awaiting
+    end
+
+    def rescan_future
+      @flash_notice_message = "Rescan future requested"
+      @lots_processor.rescan_future
     end
 
     def rescan_erred

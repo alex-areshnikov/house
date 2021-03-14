@@ -8,6 +8,10 @@ module Copart
       awaiting_lots { ::Copart::NodeCommandSender.new(_1).scan_lot }
     end
 
+    def rescan_future
+      future_lots { ::Copart::NodeCommandSender.new(_1).scan_lot }
+    end
+
     def reset_erred
       erred_lots { reset _1 }
     end
@@ -32,6 +36,10 @@ module Copart
 
     def awaiting_lots
       ::Datastorage::Finder.new(:awaiting_copart_lots).find_each { yield _1 }
+    end
+
+    def future_lots
+      ::Datastorage::Finder.new(:future_copart_lots).find_each { yield _1 }
     end
 
     def erred_lots

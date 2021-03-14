@@ -1,5 +1,9 @@
+const DEFAULT_RETRY_COUNT = 5;
+const INITIAL_TIMEOUT_MS = 2000;
+const TIMEOUT_INCREMENT_MS = 5000;
+
 export default class NavigatorWithRetry {
-  constructor(url, selector, retryCount = 3) {
+  constructor(url, selector, retryCount = DEFAULT_RETRY_COUNT) {
     this.url = url;
     this.selector = selector;
     this.retryCount = retryCount;
@@ -8,7 +12,7 @@ export default class NavigatorWithRetry {
   navigate = async (page) => {
     await page.goto(this.url, { waitUntil: "networkidle2"})
 
-    let result = await page.waitForSelector(this.selector, { timeout: 2000 }).catch(() => {})
+    let result = await page.waitForSelector(this.selector, { timeout: INITIAL_TIMEOUT_MS }).catch(() => {})
     if(!result) result = await this.retryNavigation(page)
 
     return result
@@ -19,7 +23,7 @@ export default class NavigatorWithRetry {
 
     await page.reload({ waitUntil: "networkidle2"})
 
-    let result = await page.waitForSelector(this.selector, { timeout: (2000 + (level * 2000)) }).catch(() => {})
+    let result = await page.waitForSelector(this.selector, { timeout: (INITIAL_TIMEOUT_MS + (level * TIMEOUT_INCREMENT_MS)) }).catch(() => {})
     if(!result) result = await this.retryNavigation(page, level + 1)
 
     return result

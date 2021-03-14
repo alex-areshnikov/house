@@ -6,7 +6,10 @@ module Copart
       end
 
       def call
-        ::Copart::PhotosSaver.new(data["lot_number"], data["photo_urls"].compact).call if data["photo_urls"].present?
+        return unless data["photo_urls"].present?
+
+        photo_urls = JSON.parse(data["photo_urls"])
+        ::Copart::PhotosSaver.new(data["lot_number"], photo_urls.compact).call
       end
 
       private

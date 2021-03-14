@@ -4,6 +4,7 @@ module Datastorage
       copart_lot: ->(attributes) { ::CopartLot.where(lot_number: attributes["id"] || attributes["lot_number"]) },
       scheduled_copart_lots: ->(_) { ::CopartLot.scheduled_or_future },
       awaiting_copart_lots: ->(_) { ::CopartLot.added },
+      future_copart_lots: ->(_) { ::CopartLot.future },
       scanning_copart_lots: ->(_) { ::CopartLot.scanning },
       erred_copart_lots: ->(_) { ::CopartLot.erred },
       missing_photos_copart_lots: ->(_) { ::CopartLot.missing_photos }
