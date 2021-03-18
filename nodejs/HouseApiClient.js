@@ -15,8 +15,8 @@ export default class HouseApiClient {
 
     form.append('communicator', this.communicator);
 
-    for( const key in data ) {
-      form.append(key, data[key]);
+    for(const key in data) {
+      form.append(key, this.safeDataValue(data[key]));
     }
 
     if(filePath) { form.append('file', fs.createReadStream(filePath)); }
@@ -30,5 +30,9 @@ export default class HouseApiClient {
     }).catch(error => {
       console.error(`[${this.communicator}] AXIOS failed ${error.message}`)
     })
+  }
+
+  safeDataValue = (dataValue) => {
+    return dataValue === undefined ? "" : dataValue
   }
 }

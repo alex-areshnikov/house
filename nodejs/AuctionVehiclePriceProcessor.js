@@ -1,16 +1,19 @@
+import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
+
 export default class AuctionVehiclePriceProcessor {
   constructor(logger, lotNumber) {
     this.logger = logger;
     this.lotNumber = lotNumber;
     this.currentPrice = null;
     this.sold = false;
+    this.unexpectedPageStateReporter = new UnexpectedPageStateReporter(logger, lotNumber)
   }
 
   process = async (frame) => {
     const price = await this.price(frame)
 
     if(price && price !== this.currentPrice) {
-      this.processPriceChange(price)
+      await this.processPriceChange(price)
       this.currentPrice = price
     }
   }
@@ -34,14 +37,14 @@ export default class AuctionVehiclePriceProcessor {
 
       return price
     } else {
-      this.logger.warn("Price element not found")
+      await this.unexpectedPageStateReporter.report(frame, "Price element not found")
     }
 
     return null
   }
 
-  processPriceChange = (price) => {
-    console.error(`[${this.lotNumber}] ${price}`)
+  processPriceChange = async (price) => {
+    await this.logger.say(`[${this.lotNumber}] ${price}`)
     // TODO Send price
   }
 }

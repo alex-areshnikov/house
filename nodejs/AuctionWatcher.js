@@ -2,6 +2,8 @@ import HouseApiClient from "./HouseApiClient.js"
 import AuctionVehicleNumbersProcessor from "./AuctionVehicleNumbersProcessor.js"
 import AuctionVehiclePriceProcessor from "./AuctionVehiclePriceProcessor.js"
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
+import NavigatorWithRetry from "./NavigatorWithRetry.js"
+import ElementFinderWithRetry from "./ElementFinderWithRetry.js";
 
 const AUCTION_FRAME_NAME = "iAuction5"
 const HALF_SECOND = 500
@@ -22,10 +24,10 @@ export default class AuctionWatcher {
   watch = async (page) => {
     await this.logger.say(`Opening ${this.url}`)
 
-    await page.goto(this.url, { waitUntil: "load" })
-    const lotExists = await page.waitForSelector('.lot-information').catch(() => {})
+    const navigator = new NavigatorWithRetry(this.url, ".lot-information")
+    const lotInformationElement = await navigator.navigate(page)
 
-    if(lotExists) {
+    if(lotInformationElement) {
       await this.processAuction(page)
     } else {
       await this.unexpectedPageStateReporter.report(page, "Lot not found")
@@ -33,7 +35,8 @@ export default class AuctionWatcher {
   }
 
   processAuction = async (page) => {
-    const auctionButton = await page.waitForSelector('.live-auction-notification a').catch(() => {})
+    const elementFinderWithRetry = new ElementFinderWithRetry('.live-auction-notification a')
+    const auctionButton = await elementFinderWithRetry.find(page)
 
     if(!auctionButton) {
       await this.unexpectedPageStateReporter.report(page, "Auction not found")
@@ -45,11 +48,9 @@ export default class AuctionWatcher {
 
     const frame = await this.auctionFrame(page)
 
-    if(frame){
+    if(frame) {
       await this.adjustAuctionWindow(page, frame)
       await this.processFrame(page, frame)
-    } else {
-      await this.unexpectedPageStateReporter.report(page, "Frame not found")
     }
   }
 
@@ -63,19 +64,27 @@ export default class AuctionWatcher {
   }
 
   auctionFrame = async (page) => {
-    const frames = await page.frames()
+    const elementFinderWithRetry = new ElementFinderWithRetry(`#${AUCTION_FRAME_NAME}`)
+    const frameElement = await elementFinderWithRetry.find(page)
 
-    for(const frame of frames) {
-      if(await frame.name() === AUCTION_FRAME_NAME) return frame;
+    if(frameElement) {
+      const frames = await page.frames()
+
+      for(const frame of frames) {
+        if(await frame.name() === AUCTION_FRAME_NAME) return frame;
+      }
     }
 
-    return null
+    await this.unexpectedPageStateReporter.report(page, "Frame not found")
+
+    return false
   }
 
   processFrame = async (page, frame) => {
-    const actionPageExists = await frame.waitForSelector('.widget').catch(() => {})
+    const elementFinderWithRetry = new ElementFinderWithRetry('.widget')
+    const widgetElement = elementFinderWithRetry.find(frame)
 
-    if(actionPageExists) {
+    if(widgetElement) {
       if(await this.processTargetNumber(page, frame)) {
         do {
           await this.processCurrentNumber(page, frame)
