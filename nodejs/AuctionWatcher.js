@@ -88,7 +88,7 @@ export default class AuctionWatcher {
       if(await this.processTargetNumber(page, frame)) {
         do {
           await this.processCurrentNumber(page, frame)
-          if(this.auctionVehicleNumbersProcessor.isMatch()) { await this.auctionVehiclePriceProcessor.process(frame) }
+          if(this.auctionVehicleNumbersProcessor.isMatch()) { await this.auctionVehiclePriceProcessor.process(page, frame) }
           await page.waitForTimeout(HALF_SECOND)
         } while (this.auctionVehicleNumbersProcessor.isCurrentBeforeOrMatchTarget()
                   && !this.closeRequested && !this.auctionVehiclePriceProcessor.isSold());

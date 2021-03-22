@@ -9,8 +9,8 @@ export default class AuctionVehiclePriceProcessor {
     this.unexpectedPageStateReporter = new UnexpectedPageStateReporter(logger, lotNumber)
   }
 
-  process = async (frame) => {
-    const price = await this.price(frame)
+  process = async (page, frame) => {
+    const price = await this.price(page, frame)
 
     if(price && price !== this.currentPrice) {
       await this.processPriceChange(price)
@@ -26,7 +26,7 @@ export default class AuctionVehiclePriceProcessor {
     return this.currentPrice
   }
 
-  price = async (frame) => {
+  price = async (page, frame) => {
     const priceElement = await frame.waitForSelector('.auctionrunningdiv-MEGA text', { timeout: 200 }).catch(() => {})
 
     if(priceElement) {
@@ -37,7 +37,7 @@ export default class AuctionVehiclePriceProcessor {
 
       return price
     } else {
-      await this.unexpectedPageStateReporter.report(frame, "Price element not found")
+      await this.unexpectedPageStateReporter.report(page, "Price element not found")
     }
 
     return null
