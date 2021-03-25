@@ -30,12 +30,19 @@ export default class AuctionVehiclePriceProcessor {
     const priceElement = await frame.waitForSelector('.auctionrunningdiv-MEGA text', { timeout: 200 }).catch(() => {})
 
     if(priceElement) {
-      const price = await priceElement.evaluate(element => element.textContent.trim())
+      let priceText = await priceElement.evaluate(element => element.textContent.trim())
 
-      this.sold = price.toLowerCase().includes("sold")
-      if(!price.startsWith("$")) return null
+      this.sold = priceText.toLowerCase().includes("sold")
+      if(!priceText.startsWith("$")) return null
 
-      return price
+      const locationElement = await frame.waitForSelector('.auctionrunningdiv-MEGA text:nth-of-type(2)', { timeout: 200 }).catch(() => {})
+
+      if(locationElement) {
+        const locationText = await locationElement.evaluate(element => element.textContent.trim())
+        priceText = `${priceText} ${locationText}`
+      }
+
+      return priceText
     } else {
       await this.unexpectedPageStateReporter.report(page, "Price element not found")
     }
