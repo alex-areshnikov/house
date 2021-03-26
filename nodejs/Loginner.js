@@ -44,6 +44,12 @@ export default class Loginner {
   }
 
   login = async () => {
+    const page = await this.createPage()
+    await this.checkLoggedIn(page)
+    await page.close();
+
+    if(this.successfulLogin) { return true }
+
     await this.cookiesLogin()
     if(!this.successfulLogin) { await this.directLogin() }
 
@@ -63,6 +69,7 @@ export default class Loginner {
 
     const page = await this.createPage();
     await page.setCookie(...this.cookies);
+    await page.bringToFront()
 
     return page;
   }
@@ -125,15 +132,19 @@ export default class Loginner {
     const cookies = JSON.parse(cookiesString);
     await page.setCookie(...cookies);
 
-    await page.goto(url, { waitUntil: "load" })
-    await page.waitForSelector('span.signout')
-      .then(() => { this.successfulLogin = true })
-      .catch(() => { this.successfulLogin = false })
+    await this.checkLoggedIn(page)
 
     if(this.successfulLogin) { this.cookies = await page.cookies(); }
     else { await this.logger.warn("Cookies login failed") }
 
     await page.close()
+  }
+
+  checkLoggedIn = async (page) => {
+    await page.goto(url, { waitUntil: ["load", "domcontentloaded", "networkidle0", "networkidle2"] })
+    await page.waitForSelector('span.signout', { timeout: 100 })
+      .then(() => { this.successfulLogin = true })
+      .catch(() => { this.successfulLogin = false })
   }
 
   storeCookies = async () => {

@@ -35,7 +35,7 @@ export default class AuctionVehiclePriceProcessor {
       this.sold = priceText.toLowerCase().includes("sold")
       if(!priceText.startsWith("$")) return null
 
-      const locationElement = await frame.waitForSelector('.auctionrunningdiv-MEGA text:nth-of-type(2)', { timeout: 200 }).catch(() => {})
+      const locationElement = await frame.waitForSelector('.auctionrunningdiv-MEGA text:nth-of-type(3)', { timeout: 200 }).catch(() => {})
 
       if(locationElement) {
         const locationText = await locationElement.evaluate(element => element.textContent.trim())
