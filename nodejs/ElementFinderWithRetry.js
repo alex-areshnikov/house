@@ -22,7 +22,7 @@ export default class ElementFinderWithRetry {
   retryFind = async (page, level = 0) => {
     if(level >= this.retryCount-1) return null
 
-    await page.reload({ waitUntil: ["load", "domcontentloaded", "networkidle0", "networkidle2"]})
+    await page.reload({ waitUntil: ["load", "domcontentloaded", "networkidle0"]})
     await this.unexpectedPageStateReporter.report(page, `Retry ${level+1} ${this.selector}`)
 
     let result = await page.$(this.selector).catch(() => {})
