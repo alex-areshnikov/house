@@ -2,6 +2,7 @@ import ApiLogger from "./ApiLogger.js";
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js";
 
 const DEFAULT_RETRY_COUNT = 5;
+const BANNER_WAIT_MS = 5000;
 const BANNER_SELECTOR = '.print-lot-banner'
 const API_LOGGER_NAME = 'element-finder-with-retry'
 
@@ -30,7 +31,7 @@ export default class ElementFinderWithRetry {
   }
 
   findTargetElement = async (page) => {
-    const bannerElement = await page.waitForSelector(BANNER_SELECTOR, { timeout: 2000 }).catch(() => {})
+    const bannerElement = await page.waitForSelector(BANNER_SELECTOR, { timeout: BANNER_WAIT_MS }).catch(() => {})
     if(bannerElement) { await this.deleteBanner(page)}
 
     return await page.$(this.targetSelector).catch(() => {})

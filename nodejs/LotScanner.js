@@ -41,10 +41,10 @@ export default class LotScanner {
   }
 
   processField = async (page, field) => {
-    const fieldSelector = await page.waitForSelector(field.selector).catch(() => {})
+    const fieldElement = await page.$(field.selector).catch(() => {})
 
-    if(fieldSelector) {
-      return await fieldSelector.evaluate(element => element.textContent.trim())
+    if(fieldElement) {
+      return await fieldElement.evaluate(element => element.textContent.trim())
     } else {
       await this.unexpectedPageStateReporter.report(page, `Field ${field.name} not found`)
       return ""
