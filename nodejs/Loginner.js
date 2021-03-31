@@ -27,16 +27,19 @@ export default class Loginner {
 
   init = async () => {
     this.browser = await puppeteer.launch(launchOptions);
+    this.browserContext = await this.browser.createIncognitoBrowserContext();
   }
 
   exit = async (exitCode) => {
+    await this.browserContext.close();
+
     await this.browser.close(() => {
       process.exit(exitCode)
     })
   }
 
   createPage = async () => {
-    const page = await this.browser.newPage()
+    const page = await this.browserContext.newPage()
     await page.setDefaultTimeout(DEFAULT_TIMEOUT)
     await page.setViewport({ width: 1711, height: 1101 });
 
@@ -75,6 +78,7 @@ export default class Loginner {
   }
 
   close = async () => {
+    await this.browserContext.close()
     await this.browser.close()
   }
 
