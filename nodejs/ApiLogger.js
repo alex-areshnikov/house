@@ -6,6 +6,10 @@ export default class ApiLogger {
     this.api_client = new HouseApiClient("logger");
   }
 
+  name = () => {
+    return this.source
+  }
+
   say = async (message, filePath = null) => {
     await this.api_client.send({
       level: "info",

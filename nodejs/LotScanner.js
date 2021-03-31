@@ -2,6 +2,7 @@ import HouseApiClient from "./HouseApiClient.js"
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
 import lotFields from "./lotFields.js"
 import NavigatorWithRetry from "./NavigatorWithRetry.js"
+import PageTraceReporter from "./PageTraceReporter.js";
 
 export default class LotScanner {
   constructor(logger, lotNumber) {
@@ -11,22 +12,28 @@ export default class LotScanner {
     this.url = `https://www.copart.com/lot/${lotNumber}`;
 
     this.unexpectedPageStateReporter = new UnexpectedPageStateReporter(logger, lotNumber)
+    this.pageTraceReporter = new PageTraceReporter(logger)
   }
 
   scan = async (page) => {
     await this.logger.say(`Scanning ${this.url}`)
     await this.apiClient.send({ lot_number: this.lotNumber, scan_start: "1" })
 
+    await this.pageTraceReporter.start(page)
+
     const navigator = new NavigatorWithRetry(this.url, "#show-img")
     const bigImageElement = await navigator.navigate(page)
 
     if(bigImageElement) {
       const data = await this.collectData(page);
+      await this.pageTraceReporter.report(page)
       await this.apiClient.send(data)
     } else {
       await this.unexpectedPageStateReporter.report(page, "Lot not found")
       await this.apiClient.send({ lot_number: this.lotNumber, error: "Lot not found" })
     }
+
+    await this.pageTraceReporter.report(page)
   }
 
   // private

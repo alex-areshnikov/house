@@ -55,6 +55,16 @@ class LogsPage
   def screenshot_icon(log)
     return unless log.screenshot.present?
 
+    log.screenshot.file.extension == "gz" ? tracing_icon(log) : screenshot_image_icon(log)
+  end
+
+  def tracing_icon(log)
+    content_tag(:a, href: log.screenshot_url, class: "text-secondary") do
+      content_tag(:i, "", class: "clickable ml-1 fas fa-download")
+    end
+  end
+
+  def screenshot_image_icon(log)
     content_tag(:a, data: { toggle: "modal", target: "#screenshot-modal-#{log.id}" }) do
       content_tag(:i, "", class: "clickable ml-1 fas fa-camera")
     end +

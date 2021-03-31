@@ -4,6 +4,7 @@ import AuctionVehiclePriceProcessor from "./AuctionVehiclePriceProcessor.js"
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
 import NavigatorWithRetry from "./NavigatorWithRetry.js"
 import ElementFinderWithRetry from "./ElementFinderWithRetry.js";
+import PageTraceReporter from "./PageTraceReporter.js";
 
 const AUCTION_FRAME_NAME = "iAuction5"
 const HALF_SECOND = 500
@@ -18,11 +19,15 @@ export default class AuctionWatcher {
     this.auctionVehiclePriceProcessor = new AuctionVehiclePriceProcessor(logger, lotNumber)
     this.unexpectedPageStateReporter = new UnexpectedPageStateReporter(logger, lotNumber)
 
+    this.pageTraceReporter = new PageTraceReporter(logger)
+
     this.closeRequested = false
   }
 
   watch = async (page) => {
     await this.logger.say(`Opening ${this.url}`)
+
+    await this.pageTraceReporter.start(page)
 
     const navigator = new NavigatorWithRetry(this.url, ".lot-information")
     const lotInformationElement = await navigator.navigate(page)
@@ -32,6 +37,8 @@ export default class AuctionWatcher {
     } else {
       await this.unexpectedPageStateReporter.report(page, "Lot not found")
     }
+
+    await this.pageTraceReporter.report(page)
   }
 
   processAuction = async (page) => {
@@ -83,6 +90,8 @@ export default class AuctionWatcher {
   processFrame = async (page, frame) => {
     const elementFinderWithRetry = new ElementFinderWithRetry('.widget')
     const widgetElement = elementFinderWithRetry.find(frame)
+
+    await this.pageTraceReporter.report(page)
 
     if(widgetElement) {
       if(await this.processTargetNumber(page, frame)) {

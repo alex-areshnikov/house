@@ -26,7 +26,9 @@ export default class HouseApiClient {
         'accept': 'application/json',
         'Accept-Language': 'en-US,en;q=0.8',
         'Content-Type': `multipart/form-data; boundary=${form._boundary}`
-      }
+      },
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity
     }).catch(error => {
       console.error(`[${this.communicator}] AXIOS failed ${error.message}`)
     })

@@ -1,7 +1,7 @@
 import ApiLogger from "./ApiLogger.js";
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js";
 
-const DEFAULT_RETRY_COUNT = 5;
+const DEFAULT_RETRY_COUNT = 3;
 const BANNER_WAIT_MS = 5000;
 const BANNER_SELECTOR_1 = '.print-lot-banner'
 const BANNER_SELECTOR_2 = '[fragment-id="Google-Ads"]'
@@ -23,12 +23,12 @@ export default class ElementFinderWithRetry {
   }
 
   retryFind = async (page, level) => {
-    if(level >= this.retryCount-1) return null
+    if(level >= this.retryCount) return null
 
     await this.unexpectedPageStateReporter.report(page, `Retry ${level+1} ${this.targetSelector}`)
 
     await page.reload()
-    return this.find(page, level + 1)
+    return this.find(page, level+1)
   }
 
   findTargetElement = async (page) => {

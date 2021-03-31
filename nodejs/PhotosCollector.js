@@ -1,6 +1,7 @@
 import HouseApiClient from "./HouseApiClient.js"
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js"
 import NavigatorWithRetry from "./NavigatorWithRetry.js"
+import PageTraceReporter from "./PageTraceReporter.js";
 
 const LEVEL_LIMIT = 3
 
@@ -12,11 +13,14 @@ export default class PhotosCollector {
     this.url = `https://www.copart.com/lot/${lotNumber}`;
 
     this.unexpectedPageStateReporter = new UnexpectedPageStateReporter(logger, lotNumber)
+    this.pageTraceReporter = new PageTraceReporter(logger)
   }
 
   collect = async (page) => {
     const photoUrls = [];
     await this.logger.say("Collecting photos")
+
+    await this.pageTraceReporter.start(page)
 
     const navigator = new NavigatorWithRetry(this.url, "#show-img")
     const bigImageElement = await navigator.navigate(page)
@@ -26,11 +30,15 @@ export default class PhotosCollector {
         photoUrls.push(await this.collectPhoto(page, index))
       }
 
+      await this.pageTraceReporter.report(page)
+
       const data = { lot_number: this.lotNumber, photo_urls: JSON.stringify(photoUrls) };
       await this.apiClient.send(data)
     } else {
       await this.unexpectedPageStateReporter.report(page, "Lot not found")
     }
+
+    await this.pageTraceReporter.report(page)
   }
 
   collectPhoto = async (page, index, level = 0) => {
