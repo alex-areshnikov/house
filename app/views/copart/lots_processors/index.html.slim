@@ -2,25 +2,33 @@
   h1.flex-grow-1 Copart Lots Maintenance
 
 .content
-  .mb-2
-    = link_to "Rescan awaiting (#{@page.awaiting_count})",
-            copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_AWAITING), class: "btn btn-primary"
-  .mb-2
-    = link_to "Collect missed photos (#{@page.missing_photos_count})",
-            copart_lots_processors_path(process: Copart::LotsProcessorsPage::COLLECT_MISSING_PHOTOS), class: "btn btn-primary"
-  .mb-2
-    = link_to "Rescan future (#{@page.future_count})",
-            copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_FUTURE), class: "btn btn-primary"
-  .mb-2
-    = link_to "Rescan erred (#{@page.erred_count})",
-            copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_ERRED), class: "btn btn-primary"
-  .mb-2
-    = link_to "Reset scanning (#{@page.scanning_count})",
-            copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESET_SCANNING), class: "btn btn-primary"
+  .row
+    .col-12.col-md-6
+      .mb-2
+        = link_to "Rescan awaiting (#{@page.awaiting_count})",
+                copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_AWAITING), class: "btn btn-primary"
+      .mb-2
+        = link_to "Collect missed photos (#{@page.missing_photos_count})",
+                copart_lots_processors_path(process: Copart::LotsProcessorsPage::COLLECT_MISSING_PHOTOS), class: "btn btn-primary"
+      .mb-2
+        = link_to "Rescan future (#{@page.future_count})",
+                copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_FUTURE), class: "btn btn-primary"
+      .mb-2
+        = link_to "Rescan erred (#{@page.erred_count})",
+                copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESCAN_ERRED), class: "btn btn-primary"
+      .mb-2
+        = link_to "Reset scanning (#{@page.scanning_count})",
+                copart_lots_processors_path(process: Copart::LotsProcessorsPage::RESET_SCANNING), class: "btn btn-primary"
 
-  .mb-2
-    = link_to "Delete erred (#{@page.erred_count})",
-            copart_lots_processors_path(process: Copart::LotsProcessorsPage::DELETE_ERRED), class: "btn btn-danger",
-            data: { confirm: "Are you sure?" }
+      .mb-2
+        = link_to "Delete erred (#{@page.erred_count})",
+                copart_lots_processors_path(process: Copart::LotsProcessorsPage::DELETE_ERRED), class: "btn btn-danger",
+                data: { confirm: "Are you sure?" }
+
+    .col-12.col-md-6
+      .mb-2
+        = link_to "Delete logs older than 1 day (#{@page.one_day_logs_count})",
+                copart_lots_processors_path(process: Copart::LotsProcessorsPage::KEEP_1_DAY_LOGS), class: "btn btn-warning",
+                data: { confirm: "Are you sure?" }
 
 

@@ -6,6 +6,7 @@ module Copart
     DELETE_ERRED = "delete_erred".freeze
     RESET_SCANNING = "reset_scanning".freeze
     COLLECT_MISSING_PHOTOS = "collect_missing_photos".freeze
+    KEEP_1_DAY_LOGS = "keep_1_day_logs".freeze
 
     attr_reader :flash_notice_message
 
@@ -22,6 +23,7 @@ module Copart
       delete_erred if process_item == DELETE_ERRED
       reset_scanning if process_item == RESET_SCANNING
       collect_missing_photos if process_item == COLLECT_MISSING_PHOTOS
+      keep_1_day_logs if process_item == KEEP_1_DAY_LOGS
     end
 
     def awaiting_count
@@ -42,6 +44,10 @@ module Copart
 
     def scanning_count
       ::CopartLot.scanning.count
+    end
+
+    def one_day_logs_count
+      ::HouseLog.older_than_x_days(1).count
     end
 
     private
@@ -74,6 +80,11 @@ module Copart
     def collect_missing_photos
       @flash_notice_message = "Collect missing photos requested"
       @lots_processor.collect_missing_photos
+    end
+
+    def keep_1_day_logs
+      ::Datastorage::Destroyer.new(:keep_1_day_logs).destroy
+      @flash_notice_message = "Logs deleted"
     end
 
     attr_reader :process_item

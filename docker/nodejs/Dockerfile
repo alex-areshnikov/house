@@ -29,6 +29,7 @@ RUN mkdir -p /home/runner/.yarn
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 COPY ./screenshots ./screenshots
+COPY ./tracers ./tracers
 
 # Add user so we don't need --no-sandbox.
 RUN groupadd -r runner && useradd -r -g runner -G audio,video runner \
