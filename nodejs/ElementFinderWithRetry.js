@@ -2,9 +2,7 @@ import ApiLogger from "./ApiLogger.js";
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js";
 
 const DEFAULT_RETRY_COUNT = 3;
-const BANNER_WAIT_MS = 5000;
-const BANNER_SELECTOR_1 = '.print-lot-banner'
-const BANNER_SELECTOR_2 = '[fragment-id="Google-Ads"]'
+const ELEMENT_WAIT_MS = 10000;
 const API_LOGGER_NAME = 'element-finder-with-retry'
 
 export default class ElementFinderWithRetry {
@@ -16,7 +14,7 @@ export default class ElementFinderWithRetry {
   }
 
   find = async (page, level = 0) => {
-    let targetElement = await this.findTargetElement(page)
+    let targetElement = await page.waitForSelector(this.targetSelector, { timeout: ELEMENT_WAIT_MS }).catch(() => {})
     if(!targetElement) targetElement = await this.retryFind(page, level)
 
     return targetElement
@@ -29,25 +27,5 @@ export default class ElementFinderWithRetry {
 
     await page.reload()
     return this.find(page, level+1)
-  }
-
-  findTargetElement = async (page) => {
-    await this.deleteBanner(page, BANNER_SELECTOR_1)
-    await this.deleteBanner(page, BANNER_SELECTOR_2)
-
-    return await page.$(this.targetSelector).catch(() => {})
-  }
-
-  deleteBanner = async (page, bannerSelector) => {
-    const bannerElement = await page.waitForSelector(bannerSelector, { timeout: BANNER_WAIT_MS }).catch(() => {})
-    if(!bannerElement) { return }
-
-    await page.evaluate((selector) => {
-      const elements = document.querySelectorAll(selector);
-
-      for(let i=0; i< elements.length; i++){
-        elements[i].parentNode.removeChild(elements[i]);
-      }
-    }, bannerSelector)
   }
 }

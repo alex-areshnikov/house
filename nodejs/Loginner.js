@@ -39,8 +39,18 @@ export default class Loginner {
     const page = await this.browser.newPage()
     await page.setDefaultTimeout(DEFAULT_TIMEOUT)
     await page.setViewport({ width: 1711, height: 1101 });
+    await page.setRequestInterception(true)
+
+    this.blockGoogleAdRequests(page)
 
     return page
+  }
+
+  blockGoogleAdRequests = (page) => {
+    page.on("request", interceptedRequest => {
+      if(interceptedRequest.url().includes("googletagservices")) { interceptedRequest.abort() }
+      else { interceptedRequest.continue() }
+    })
   }
 
   login = async () => {
