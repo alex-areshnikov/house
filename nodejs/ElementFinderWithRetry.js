@@ -2,6 +2,7 @@ import ApiLogger from "./ApiLogger.js";
 import UnexpectedPageStateReporter from "./UnexpectedPageStateReporter.js";
 
 const DEFAULT_RETRY_COUNT = 3;
+const RELOAD_INITIAL_TIMEOUT = 20000
 const ELEMENT_WAIT_MS = 10000;
 const API_LOGGER_NAME = 'element-finder-with-retry'
 
@@ -23,7 +24,7 @@ export default class ElementFinderWithRetry {
   retryFind = async (page, level) => {
     if(level >= this.retryCount) return null
 
-    await page.reload({ waitUntil: ["load", "domcontentloaded"]})
+    await page.reload({ waitUntil: ["load", "domcontentloaded"], timeout: (RELOAD_INITIAL_TIMEOUT + ELEMENT_WAIT_MS * level)}).catch(() => {})
     await this.unexpectedPageStateReporter.report(page, `Retry ${level+1} ${this.targetSelector}`)
 
     return this.find(page, level+1)
