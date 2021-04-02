@@ -153,7 +153,7 @@ export default class Loginner {
   checkLoggedIn = async (page) => {
     await page.goto(url, { waitUntil: ["load", "domcontentloaded", "networkidle0"] })
       .catch(() => { this.successfulLogin = false })
-    await page.waitForSelector('span.signout', { timeout: 100 })
+    await page.waitForSelector('span.signout', { timeout: 1000 })
       .then(() => { this.successfulLogin = true })
       .catch(() => { this.successfulLogin = false })
   }

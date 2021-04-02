@@ -21,7 +21,7 @@ export default class LotScanner {
 
     await this.pageTraceReporter.start(page)
 
-    const navigator = new NavigatorWithRetry(this.url, "#show-img")
+    const navigator = new NavigatorWithRetry(this.url, ".lot-detail-section")
     const bigImageElement = await navigator.navigate(page)
 
     if(bigImageElement) {
