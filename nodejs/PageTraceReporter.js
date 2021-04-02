@@ -9,7 +9,6 @@ export default class PageTraceReporter {
   }
 
   start = async (page) => {
-    return // Tracing off
     if(this.started) { return }
 
     this.filePath = `tracers/${Date.now()}-${this.logger.name()}.json`
@@ -18,8 +17,6 @@ export default class PageTraceReporter {
   }
 
   report = async (page) => {
-    return // Tracing off
-
     if(!this.started) { return }
     if(this.reported) { return }
 
