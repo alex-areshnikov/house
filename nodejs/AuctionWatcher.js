@@ -51,7 +51,9 @@ export default class AuctionWatcher {
     }
 
     await auctionButton.click()
-    await page.waitForNavigation({ waitUntil: "networkidle2" }).catch(() => {})
+    await page.waitForNavigation({ waitUntil: ["load", "domcontentloaded"]}).catch(() => {})
+    const actionFinderWithRetry = new ElementFinderWithRetry('#iAuction5')
+    await actionFinderWithRetry.find(page)
 
     const frame = await this.auctionFrame(page)
 
