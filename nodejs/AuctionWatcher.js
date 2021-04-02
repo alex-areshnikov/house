@@ -29,32 +29,21 @@ export default class AuctionWatcher {
 
     await this.pageTraceReporter.start(page)
 
-    const navigator = new NavigatorWithRetry(this.url, ".lot-information")
-    const lotInformationElement = await navigator.navigate(page)
+    const navigator = new NavigatorWithRetry(this.url, '.live-auction-notification a')
+    const auctionButton = await navigator.navigate(page)
 
-    if(lotInformationElement) {
+    if(auctionButton) {
+      await auctionButton.click()
+      await page.waitForNavigation({ waitUntil: ["load", "domcontentloaded"]}).catch(() => {})
       await this.processAuction(page)
     } else {
-      await this.unexpectedPageStateReporter.report(page, "Lot not found")
+      await this.unexpectedPageStateReporter.report(page, "Auction not found")
     }
 
     await this.pageTraceReporter.report(page)
   }
 
   processAuction = async (page) => {
-    const elementFinderWithRetry = new ElementFinderWithRetry('.live-auction-notification a')
-    const auctionButton = await elementFinderWithRetry.find(page)
-
-    if(!auctionButton) {
-      await this.unexpectedPageStateReporter.report(page, "Auction not found")
-      return
-    }
-
-    await auctionButton.click()
-    await page.waitForNavigation({ waitUntil: ["load", "domcontentloaded"]}).catch(() => {})
-    const actionFinderWithRetry = new ElementFinderWithRetry('#iAuction5')
-    await actionFinderWithRetry.find(page)
-
     const frame = await this.auctionFrame(page)
 
     if(frame) {
