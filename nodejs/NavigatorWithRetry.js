@@ -7,7 +7,7 @@ export default class NavigatorWithRetry {
   }
 
   navigate = async (page) => {
-    await page.goto(this.url).catch(() => { this.error = true })
+    await page.goto(this.url, { waitUntil: ["load", "domcontentloaded"]}).catch(() => { this.error = true })
 
     return(this.error ? null : (await this.elementFinderWithRetry.find(page)))
   }
