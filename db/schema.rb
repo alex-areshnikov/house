@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_12_151359) do
+ActiveRecord::Schema.define(version: 2021_06_12_153937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 2021_06_12_151359) do
     t.string "odometer"
     t.string "engine_type"
     t.string "location"
+    t.bigint "vehicle_id"
+    t.index ["vehicle_id"], name: "index_copart_lots_on_vehicle_id"
   end
 
   create_table "holodilnic_sensors_data", force: :cascade do |t|
@@ -92,4 +94,5 @@ ActiveRecord::Schema.define(version: 2021_06_12_151359) do
   end
 
   add_foreign_key "copart_lot_photos", "copart_lots"
+  add_foreign_key "copart_lots", "vehicles"
 end
