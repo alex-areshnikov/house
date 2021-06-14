@@ -5,6 +5,8 @@ class BackfillVehicles < ActiveRecord::Migration[6.1]
   class Vehicle < ApplicationRecord; end
 
   def up
+    Vehicle.destroy_all
+
     CopartLot.find_each do |copart_lot|
       next if Vehicle.where(vin: copart_lot.vin).exists?
 
@@ -13,6 +15,7 @@ class BackfillVehicles < ActiveRecord::Migration[6.1]
                         year: copart_lot.year,
                         make: copart_lot.make,
                         model: copart_lot.model,
+                        engine_type: copart_lot.engine_type,
                         odometer: copart_lot.odometer })
     end
   end

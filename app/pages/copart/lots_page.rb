@@ -65,13 +65,13 @@ module Copart
     def available_models
       return [nil] if ransack_query.nil? || ransack_query["make_eq"].blank?
 
-      [nil] + ::CopartLot.distinct(:model).where(make: ransack_query["make_eq"]).order(:model).pluck(:model).compact
+      [nil] + ::Vehicle.distinct(:model).where(make: ransack_query["make_eq"]).order(:model).pluck(:model).compact
     end
 
     private
 
     def available(field)
-      [nil] + ::CopartLot.distinct(field).order(field).pluck(field).compact
+      [nil] + ::Vehicle.distinct(field).order(field).pluck(field).compact
     end
   end
 end

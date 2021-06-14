@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(version: 2021_06_12_153937) do
     t.integer "year"
     t.string "make"
     t.string "model"
+    t.string "engine_type"
     t.integer "odometer"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

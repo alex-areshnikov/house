@@ -1,27 +1,30 @@
 module Copart
   class LotDecorator
     include ActionView::Helpers::DateHelper
-    delegate :id, :lot_number, :name, :vin, :primary_damage, :secondary_damage, :sale_date, :doc_type,
-             :odometer, :engine_type, :location, :aasm, to: :lot
+    delegate :id, :lot_number, :primary_damage, :secondary_damage, :sale_date, :doc_type,
+             :location, :aasm, to: :lot
+
+    delegate :name, :vin, :odometer, :engine_type, :photos, to: :vehicle
 
     FUTURE = "Future".freeze
 
     def initialize(lot)
       @lot = lot
+      @vehicle = lot.vehicle
     end
 
     def photo_thumb_url
       return unless photos?
 
-      lot.copart_lot_photos.first.photo.thumb.url
+      photos.first.photo.thumb.url
     end
 
     def photos?
-      lot.copart_lot_photos.exists?
+      photos.exists?
     end
 
     def photo_urls
-      lot.copart_lot_photos.map(&:photo_url)
+      photos.map(&:photo_url)
     end
 
     def state_text
@@ -47,7 +50,7 @@ module Copart
 
     private
 
-    attr_reader :lot
+    attr_reader :lot, :vehicle
 
     def sale_date_past?
       return false if sale_date.blank?

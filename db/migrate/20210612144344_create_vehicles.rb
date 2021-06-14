@@ -8,6 +8,7 @@ class CreateVehicles < ActiveRecord::Migration[6.1]
       t.integer :year
       t.string :make
       t.string :model
+      t.string :engine_type
       t.integer :odometer
 
       t.timestamps
