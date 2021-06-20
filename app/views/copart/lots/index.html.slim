@@ -18,16 +18,16 @@
   .row.form-group
     .col-12.col-md-6.col-lg-3
       = form.label :search
-      = form.search_field :name_or_vin_or_lot_number_cont, class: "form-control"
+      = form.search_field :vehicle_name_or_vehicle_vin_or_lot_number_cont, class: "form-control"
     .col-12.col-md-6.col-lg-2
       = form.label :year
-      = form.select :year_eq, @page.available_years, {}, { class: "form-control" }
+      = form.select :vehicle_year_eq, @page.available_years, {}, { class: "form-control" }
     .col-12.col-md-6.col-lg-2
       = form.label :make
-      = form.select :make_eq, @page.available_makes, {}, { class: "form-control" }
+      = form.select :vehicle_make_eq, @page.available_makes, {}, { class: "form-control" }
     .col-12.col-md-6.col-lg-2
       = form.label :model
-      = form.select :model_eq, @page.available_models, {}, { class: "form-control" }
+      = form.select :vehicle_model_eq, @page.available_models, {}, { class: "form-control" }
     .col-12.col-lg-3.align-self-end.justify-content-end
       = link_to "Reset", copart_lots_path, class: "btn btn-secondary mt-2 float-right"
       = form.submit class: "btn btn-primary mr-1 mt-2 float-right"

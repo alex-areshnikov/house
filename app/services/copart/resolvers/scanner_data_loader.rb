@@ -25,9 +25,16 @@ module Copart
 
       def store_scan_result
         parsed_vehicle_name = ::Copart::VehicleNameParser.new(data["name"]).call
-        data["year"] = parsed_vehicle_name.year
-        data["make"] = parsed_vehicle_name.make
-        data["model"] = parsed_vehicle_name.model
+
+        data[:vehicle_attributes] = {
+          name: data.delete("name"),
+          year: parsed_vehicle_name.year,
+          make: parsed_vehicle_name.make,
+          model: parsed_vehicle_name.model,
+          vin: data.delete("vin"),
+          odometer: data.delete("odometer"),
+          engine_type: data.delete("engine_type"),
+        }
 
         ::Datastorage::Updater.new(:copart_lot, data).update_or_create
         ::Copart::LotPhotosCollector.new(copart_lot).call

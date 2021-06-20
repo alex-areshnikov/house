@@ -110,7 +110,7 @@ export default class Loginner {
       await page.click('input[name=remember-me]', {delay: 100})
 
       await page.click('button[data-uname=loginSigninmemberbutton]', {delay: 100})
-      await page.waitForSelector('span.signout')
+      await page.waitForSelector('span.loggedInUserIcon')
         .then(() => {
           this.successfulLogin = true
         })
@@ -122,8 +122,7 @@ export default class Loginner {
         this.cookies = await page.cookies();
         await this.storeCookies();
       } else {
-        await this.logger.warn("Direct login failed")
-        await page.screenshot({path: `screenshots/${Date.now()}_error_direct_login.png`})
+        await this.unexpectedPageStateReporter.report(page, "Direct login failed")
       }
     } else {
       await this.unexpectedPageStateReporter.report(page, "Login page not found")
@@ -153,7 +152,7 @@ export default class Loginner {
   checkLoggedIn = async (page) => {
     await page.goto(url, { waitUntil: ["load", "domcontentloaded", "networkidle0"] })
       .catch(() => { this.successfulLogin = false })
-    await page.waitForSelector('span.signout', { timeout: 1000 })
+    await page.waitForSelector('span.loggedInUserIcon', { timeout: 1000 })
       .then(() => { this.successfulLogin = true })
       .catch(() => { this.successfulLogin = false })
   }

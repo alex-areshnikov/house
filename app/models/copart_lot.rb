@@ -1,10 +1,12 @@
 class CopartLot < ApplicationRecord
+  self.ignored_columns = %w(name vin year make model engine_type odometer)
+  delegate :photos, to: :vehicle, prefix: true
+
   AUCTION_DURATION_HOURS = 4.hours
 
   include AASM
 
-  has_many :copart_lot_photos, dependent: :destroy
-  belongs_to :vehicle
+  belongs_to :vehicle, dependent: :destroy
 
   validates :lot_number, presence: true, uniqueness: true
 
@@ -16,7 +18,11 @@ class CopartLot < ApplicationRecord
   scope :scanning, ->{ where(aasm_state: :scanning) }
   scope :erred, ->{ where(aasm_state: :erred) }
   scope :scanned, ->{ where.not(aasm_state: [:initialized, :scan_requested, :scanning]) }
-  scope :missing_photos, ->{ left_joins(:copart_lot_photos).group("copart_lots.id").having("count(copart_lots.id) < 10") }
+  scope :missing_photos, -> do
+    left_joins(vehicle: :photos).group("copart_lots.id").having("count(copart_lots.id) < 10")
+  end
+
+  accepts_nested_attributes_for :vehicle
 
   aasm do
     state :initialized, initial: true

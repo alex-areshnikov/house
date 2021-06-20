@@ -11,11 +11,11 @@ module Copart
     end
 
     def new
-      @lot = CopartLot.new
+      @lot = ::CopartLot.new
     end
 
     def create
-      @lot = CopartLot.new(copart_lot_params)
+      @lot = ::CopartLot.new(copart_lot_params.merge(vehicle: ::Vehicle.new))
       if @lot.save
         ::Copart::NodeCommandSender.new(@lot).scan_lot
 

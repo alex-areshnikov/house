@@ -6,13 +6,13 @@ module Copart
     end
 
     def call
-      copart_lot = ::Datastorage::Finder.new(:copart_lot, {"lot_number" => lot_number}).find
-      return if copart_lot.blank?
+      vehicle = ::Datastorage::Finder.new(:copart_lot_vehicle, {"lot_number" => lot_number}).find
+      return if vehicle.blank?
 
-      copart_lot.copart_lot_photos.destroy_all
+      ::Datastorage::Destroyer.new(:photos).destroy(vehicle)
 
       photo_urls.each do |photo_url|
-        ::Datastorage::Creator.new(:copart_lot_photo, { copart_lot: copart_lot, remote_photo_url: photo_url }).create
+        ::Datastorage::Creator.new(:photo, { owner: vehicle, remote_photo_url: photo_url }).create
       end
     end
 

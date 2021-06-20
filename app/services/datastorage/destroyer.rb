@@ -1,15 +1,16 @@
 module Datastorage
   class Destroyer
     DESTROYERS = {
-      keep_1_day_logs: ->() { ::HouseLog.older_than_x_days(1).destroy_all },
+      keep_1_day_logs: ->(_) { ::HouseLog.older_than_x_days(1).destroy_all },
+      photos: ->(owner) { ::Photo.where(owner: owner).destroy_all },
     }
 
     def initialize(target_object)
       @target_object = target_object
     end
 
-    def destroy
-      DESTROYERS.fetch(target_object).call
+    def destroy(entity = nil)
+      DESTROYERS.fetch(target_object).call(entity)
     end
 
     private

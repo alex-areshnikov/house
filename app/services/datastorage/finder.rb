@@ -2,6 +2,10 @@ module Datastorage
   class Finder
     FINDERS = {
       copart_lot: ->(attributes) { ::CopartLot.where(lot_number: attributes["id"] || attributes["lot_number"]) },
+      copart_lot_vehicle: ->(attributes) do
+        ::Vehicle.joins(:copart_lot).where(copart_lot: { lot_number: attributes["id"] || attributes["lot_number"]})
+      end,
+
       scheduled_copart_lots: ->(_) { ::CopartLot.scheduled_or_future },
       awaiting_copart_lots: ->(_) { ::CopartLot.added },
       future_copart_lots: ->(_) { ::CopartLot.future },
