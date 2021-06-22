@@ -7,6 +7,8 @@ class Photo < ApplicationRecord
   belongs_to :owner, polymorphic: true
 end
 
+class CopartLot < ApplicationRecord; end
+
 class CopartLotPhoto < ApplicationRecord
   mount_uploader :photo, ::CopartVehiclePhotoUploader
 
