@@ -1,4 +1,7 @@
-class CopartLot < ApplicationRecord; end
+class CopartLot < ApplicationRecord
+  self.ignored_columns = %w()
+end
+
 class Vehicle < ApplicationRecord; end
 
 class BackfillVehicleIdOnCopartLots < ActiveRecord::Migration[6.1]

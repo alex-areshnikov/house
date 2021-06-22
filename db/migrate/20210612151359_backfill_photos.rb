@@ -7,7 +7,9 @@ class Photo < ApplicationRecord
   belongs_to :owner, polymorphic: true
 end
 
-class CopartLot < ApplicationRecord; end
+class CopartLot < ApplicationRecord
+  self.ignored_columns = %w()
+end
 
 class CopartLotPhoto < ApplicationRecord
   mount_uploader :photo, ::CopartVehiclePhotoUploader
