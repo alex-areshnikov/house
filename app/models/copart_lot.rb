@@ -18,6 +18,8 @@ class CopartLot < ApplicationRecord
   scope :scanning, ->{ where(aasm_state: :scanning) }
   scope :erred, ->{ where(aasm_state: :erred) }
   scope :scanned, ->{ where.not(aasm_state: [:initialized, :scan_requested, :scanning]) }
+  scope :purchased, ->{ where(purchased: true) }
+
   scope :missing_photos, -> do
     left_joins(vehicle: :photos).group("copart_lots.id").having("count(copart_lots.id) < 10")
   end

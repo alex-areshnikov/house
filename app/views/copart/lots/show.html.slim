@@ -1,0 +1,18 @@
+h2
+  = @page.name
+hr
+
+= render partial: "vehicle_card", locals: { lot: @page.lot }
+
+h1.mt-4 Expenses
+hr
+
+.card.shadow
+  .card-body
+    - if @page.expenses?
+      | Exp here
+    - else
+      h4 No expenses
+
+    .mt-4
+      = link_to "Back", copart_lots_path(purchased: 1), class: "btn btn-outline-secondary"

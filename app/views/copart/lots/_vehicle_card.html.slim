@@ -1,0 +1,63 @@
+.col-12 data-lot-id="#{lot.id}"
+  .card.shadow.mb-2
+    .card-body
+      .row.align-items-center
+        .p-1
+          - if lot.photos?
+            a data-toggle="modal" data-target="#photo-carousel-modal-#{lot.id}"
+              = image_tag(lot.photo_thumb_url, class: "img-thumbnail")
+            = render partial: "photo_carousel_modal", locals: { lot: lot }
+        .col-md
+          .d-flex
+            h5.card-title.flex-grow-1
+              = "Lot #{lot.lot_number}"
+            - unless @page.suppress_vehicle_actions?
+              - if @page.purchased?
+                = link_to copart_lot_path(lot.id) do
+                  i.fas.fa-eye
+              - else
+                span.pr-5.state-field
+                  = lot.state_text
+                span.pr-1
+                  = link_to copart_command_path(lot.id, command: ::Copart::NodeCommandSender::WATCH_AUCTION_COMMAND), data: { turbolinks: false, confirm: "Are you sure?" } do
+                    i.fas.fa-gavel
+                span.pr-1
+                  = link_to copart_command_path(lot.id, command: ::Copart::NodeCommandSender::SCAN_LOT_COMMAND), data: { turbolinks: false, confirm: "Are you sure?" } do
+                    i.fas.fa-undo
+                = link_to edit_copart_lot_path(lot.id) do
+                  i.fas.fa-edit
+                - if lot.purchased
+                  = link_to copart_lot_path(lot.id) do
+                    i.fas.fa-eye
+                - else
+                  = link_to copart_lot_path(lot.id, query: params.permit![:query]), method: :delete, class: "text-danger", data: { confirm: "Are you sure?" } do
+                    i.fas.fa-trash-alt
+          .row
+            .col-2
+              label Name
+            .col-4
+              = link_to(lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank") if lot.name.present?
+            .col-2
+              label Doc Type
+            .col-4 #{lot.doc_type}
+          .row
+            .col-2
+              label VIN
+            .col-4 #{lot.vin}
+            .col-2
+              label Odometer
+            .col-3 #{lot.odometer}
+          .row
+            .col-2
+              label Damage
+            .col-4 #{lot.damage}
+            .col-2
+              label Engine Type
+            .col-4 #{lot.engine_type}
+          .row
+            .col-2
+              label Sale Date
+            .col-4 class="#{lot.sale_date_text_class}" #{lot.sale_date_text}
+            .col-2
+              label Location
+            .col-4 #{lot.location}

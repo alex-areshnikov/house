@@ -4,9 +4,10 @@ module Copart
 
     attr_reader :page, :ransack_query
 
-    def initialize(page, ransack_query)
+    def initialize(page, ransack_query, purchased)
       @page = page
       @ransack_query = ransack_query
+      @purchased = purchased
     end
 
     def lots_ransack
@@ -15,7 +16,8 @@ module Copart
     end
 
     def lots
-      lots_ransack.result.page(page).per(PER_PAGE)
+      relation = (purchased? ? ::CopartLot.purchased : lots_ransack.result)
+      relation.page(page).per(PER_PAGE)
     end
 
     def main_lots
@@ -32,6 +34,10 @@ module Copart
 
     def lot_numbers_erred
       ::CopartLot.erred.pluck(:lot_number).join(", ")
+    end
+
+    def purchased?
+      purchased.present?
     end
 
     def info_card?
@@ -68,7 +74,13 @@ module Copart
       [nil] + ::Vehicle.distinct(:model).where(make: ransack_query["make_eq"]).order(:model).pluck(:model).compact
     end
 
+    def suppress_vehicle_actions?
+      false
+    end
+
     private
+
+    attr_reader :purchased
 
     def available(field)
       [nil] + ::Vehicle.distinct(field).order(field).pluck(field).compact

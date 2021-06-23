@@ -2,7 +2,7 @@ module Copart
   class LotDecorator
     include ActionView::Helpers::DateHelper
     delegate :id, :lot_number, :primary_damage, :secondary_damage, :sale_date, :doc_type,
-             :location, :aasm, to: :lot
+             :location, :purchased, :aasm, to: :lot
 
     delegate :name, :vin, :odometer, :engine_type, :photos, to: :vehicle
 

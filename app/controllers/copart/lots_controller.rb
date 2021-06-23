@@ -7,7 +7,12 @@ module Copart
     end
 
     def index
-      @page = ::Copart::LotsPage.new(params[:page], params[:query])
+      @page = ::Copart::LotsPage.new(params[:page], params[:query], params[:purchased])
+    end
+
+    def show
+      @page = ::Copart::LotPage.new(params[:id])
+      @page.build
     end
 
     def new
@@ -25,6 +30,19 @@ module Copart
       end
     end
 
+    def edit
+      @lot = ::CopartLot.find(params[:id])
+    end
+
+    def update
+      @lot = ::CopartLot.find(params[:id])
+      if @lot.update(lot_update_params)
+        redirect_to copart_lots_path
+      else
+        render "edit"
+      end
+    end
+
     def destroy
       CopartLot.find(params[:id]).destroy
 
@@ -35,6 +53,10 @@ module Copart
 
     def copart_lot_params
       params.require(:copart_lot).permit(:lot_number)
+    end
+
+    def lot_update_params
+      params.require(:copart_lot).permit(:purchased)
     end
   end
 end

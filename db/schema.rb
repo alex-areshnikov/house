@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_12_153937) do
+ActiveRecord::Schema.define(version: 2021_06_22_234715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2021_06_12_153937) do
     t.string "engine_type"
     t.string "location"
     t.bigint "vehicle_id"
+    t.boolean "purchased", default: false
     t.index ["vehicle_id"], name: "index_copart_lots_on_vehicle_id"
   end
 
