@@ -14,6 +14,10 @@ Rails.application.routes.draw do
 
   resources :logs, only: %i[index]
 
+  resources :vehicles, only: %i[index], module: :vehicles do
+    resources :expenses, except: %i[show index]
+  end
+
   namespace :copart do
     resources :lots
     resources :lots_processors, only: %i[index]

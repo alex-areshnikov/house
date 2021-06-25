@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_22_234715) do
+ActiveRecord::Schema.define(version: 2021_06_23_013727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,19 @@ ActiveRecord::Schema.define(version: 2021_06_22_234715) do
     t.bigint "vehicle_id"
     t.boolean "purchased", default: false
     t.index ["vehicle_id"], name: "index_copart_lots_on_vehicle_id"
+  end
+
+  create_table "expenses", force: :cascade do |t|
+    t.decimal "amount", precision: 10, scale: 2
+    t.text "description"
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.string "expense_type", default: "debit"
+    t.boolean "refundable", default: false
+    t.boolean "refunded", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["owner_type", "owner_id"], name: "index_expenses_on_owner"
   end
 
   create_table "holodilnic_sensors_data", force: :cascade do |t|

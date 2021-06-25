@@ -1,16 +1,50 @@
 h2
   = @page.name
-hr
 
 = render partial: "vehicle_card", locals: { lot: @page.lot }
 
-h1.mt-4 Expenses
-hr
+.d-flex.justify-content-end.mt-4
+  h1.flex-grow-1 Expenses
+  = link_to new_vehicle_expense_path(@page.vehicle_id), class: "btn btn-primary btn-circle mt-2" do
+    i.fas.fa-plus
 
 .card.shadow
   .card-body
     - if @page.expenses?
-      | Exp here
+      .row.border-bottom.font-weight-bold
+        .col-2 Actions
+        .col-6 Description
+        .col-2 Debit
+        .col-2 Credit
+      - @page.decorated_expenses.each do |expense|
+        .row.border-bottom.highlight-background
+          .col-2
+            | Actions
+          .col-6
+            = expense.description
+          .col-2
+            = number_to_currency expense.amount_debit
+          .col-2
+            = number_to_currency expense.amount_credit
+
+      .row.border-bottom.border-top.font-weight-bold
+        .col-2 &nbsp;
+        .col-6
+          b Total
+        .col-2.text-danger
+          = number_to_currency @page.expenses_debit_total
+        .col-2.text-success
+          = number_to_currency @page.expenses_credit_total
+
+      .row.border-bottom.font-weight-bold
+        .col-2 &nbsp;
+        .col-6
+          b Balance
+        .col-2 &nbsp;
+        .col-2
+          b
+            = number_to_currency @page.expenses_grand_total
+
     - else
       h4 No expenses
 

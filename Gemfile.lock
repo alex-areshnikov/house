@@ -103,6 +103,8 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.4.4)
     e2mmap (0.1.0)
+    enumerize (2.4.0)
+      activesupport (>= 3.2)
     erubi (1.10.0)
     et-orbi (1.2.4)
       tzinfo
@@ -372,6 +374,7 @@ DEPENDENCIES
   capybara (>= 2.15)
   carrierwave (~> 2.1)
   devise (~> 4.7)
+  enumerize (~> 2.4)
   factory_bot_rails (~> 6.1)
   fog-aws (~> 3.8)
   jbuilder (~> 2.7)

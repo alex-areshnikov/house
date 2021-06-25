@@ -1,6 +1,6 @@
 module Copart
   class LotPage
-    delegate :name, to: :lot
+    delegate :name, :vehicle_id, :decorated_expenses, :expenses, :expenses?, to: :lot
 
     attr_reader :lot
 
@@ -12,12 +12,20 @@ module Copart
       @lot = ::Copart::LotDecorator.new(::CopartLot.find(copart_lot_id))
     end
 
-    def expenses?
-      false
-    end
-
     def suppress_vehicle_actions?
       true
+    end
+
+    def expenses_debit_total
+      expenses.debit.sum(:amount)
+    end
+
+    def expenses_credit_total
+      expenses.credit.sum(:amount)
+    end
+
+    def expenses_grand_total
+      expenses_debit_total - expenses_credit_total
     end
 
     private

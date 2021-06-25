@@ -4,7 +4,7 @@ module Copart
     delegate :id, :lot_number, :primary_damage, :secondary_damage, :sale_date, :doc_type,
              :location, :purchased, :aasm, to: :lot
 
-    delegate :name, :vin, :odometer, :engine_type, :photos, to: :vehicle
+    delegate :name, :vin, :odometer, :engine_type, :photos, :expenses, to: :vehicle
 
     FUTURE = "Future".freeze
 
@@ -17,6 +17,14 @@ module Copart
       return unless photos?
 
       photos.first.photo.thumb.url
+    end
+
+    def decorated_expenses
+      expenses.map { ::Vehicles::ExpenseDecorator.new(_1) }
+    end
+
+    def expenses?
+      expenses.exists?
     end
 
     def photos?
@@ -46,6 +54,10 @@ module Copart
       return "text-success" if sale_date_today?
 
       sale_date_past? ? "text-danger" : "text-secondary"
+    end
+
+    def vehicle_id
+      vehicle.id
     end
 
     private
