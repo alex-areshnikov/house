@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   resources :logs, only: %i[index]
+  resources :expense_categories, only: %i[index new create destroy]
 
   resources :vehicles, only: %i[index], module: :vehicles do
     resources :expenses, except: %i[show index]

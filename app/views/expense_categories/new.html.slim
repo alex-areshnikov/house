@@ -1,0 +1,11 @@
+h1 Add Expense Category
+
+.card.shadow
+  .card-body
+    = simple_form_for @category, url: expense_categories_path do |f|
+      = f.error_notification
+
+      = f.input :name
+
+      = f.button :submit, class: "btn btn-primary mr-2"
+      = link_to "Back", expense_categories_path, class: "btn btn-outline-secondary"

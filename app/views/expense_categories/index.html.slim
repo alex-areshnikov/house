@@ -1,0 +1,18 @@
+.d-flex.justify-content-end.mt-4
+  h1.flex-grow-1 Expence Categories
+  = link_to new_expense_category_path, class: "btn btn-primary btn-circle mt-2" do
+    i.fas.fa-plus
+
+.card.shadow
+  .card-body
+    .row.border-bottom.font-weight-bold
+      .col-12 Name
+    - @categories.each do |category|
+      .row.border-bottom.highlight-background.shown-hidden-trigger
+        .col-12
+          .d-flex
+            .mr-auto
+              = category.name
+            .pl-1.shown-on-hover
+              = link_to expense_category_path(category), class: "text-danger", method: :delete, data: { confirm: "Are you sure?" } do
+                i.fas.fa-trash
