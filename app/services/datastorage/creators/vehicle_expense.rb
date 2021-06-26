@@ -8,7 +8,16 @@ module Datastorage
 
       def create
         vehicle = ::Vehicle.find(vehicle_id)
-        vehicle.expenses.create(expense_attributes)
+        processor = ::Expenses::AttributesProcessor.new(expense_attributes)
+        processor.process
+
+        if processor.success?
+          vehicle.expenses.create(processor.attributes)
+        else
+          expense = vehicle.expenses.build(expense_attributes)
+          expense.errors.add(:amount, :invalid, message: processor.error_message)
+          expense
+        end
       end
 
       private

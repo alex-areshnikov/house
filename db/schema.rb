@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_23_013727) do
+ActiveRecord::Schema.define(version: 2021_06_26_155459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,8 @@ ActiveRecord::Schema.define(version: 2021_06_23_013727) do
     t.boolean "refunded", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "currency", default: "USD", null: false
+    t.decimal "usd_amount", precision: 10, scale: 2
     t.index ["owner_type", "owner_id"], name: "index_expenses_on_owner"
   end
 

@@ -31,3 +31,9 @@
 
 en:
   hello: "Hello world"
+  enumerize:
+    defaults:
+      currency:
+        USD: "USD"
+        EUR: "EUR"
+        BYN: "BYN"

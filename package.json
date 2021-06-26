@@ -10,6 +10,7 @@
     "form-data": "^4.0.0",
     "jquery": "^3.5.1",
     "node-redis-pubsub": "^5.0.0",
+    "popper.js": "^1.16.1",
     "puppeteer": "^8.0.0",
     "puppeteer-extra": "^3.1.18",
     "puppeteer-extra-plugin-stealth": "^2.7.6",

@@ -17,11 +17,11 @@ module Copart
     end
 
     def expenses_debit_total
-      expenses.debit.sum(:amount)
+      expenses.debit.sum(:usd_amount)
     end
 
     def expenses_credit_total
-      expenses.credit.sum(:amount)
+      expenses.credit.sum(:usd_amount)
     end
 
     def expenses_grand_total

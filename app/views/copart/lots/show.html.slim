@@ -8,6 +8,8 @@ h2
   = link_to new_vehicle_expense_path(@page.vehicle_id), class: "btn btn-primary btn-circle mt-2" do
     i.fas.fa-plus
 
+button.btn.btn-primary type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip on bottom" Tooltip on bottom
+
 .card.shadow
   .card-body
     - if @page.expenses?
@@ -27,7 +29,7 @@ h2
               .pl-1.show-on-hoverover
                 = link_to vehicle_expense_path(@page.vehicle_id, expense.id), class: "text-danger", method: :delete, data: { confirm: "Are you sure?"} do
                   i.fas.fa-trash
-          .col-2
+          .col-2 data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top"
             = number_to_currency expense.amount_debit
           .col-2
             = number_to_currency expense.amount_credit

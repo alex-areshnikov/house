@@ -10,6 +10,10 @@ module Vehicles
       ::Expense.expense_type.options
     end
 
+    def currency_options
+      ::Expense.currency.options
+    end
+
     def lot_id
       lot = ::Datastorage::Finders::CopartLot.by_vehicle_id(vehicle_id)
       lot.id

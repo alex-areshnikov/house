@@ -7,6 +7,7 @@ class Expense < ApplicationRecord
   validates :description, presence: true
 
   enumerize :expense_type, in: [:debit, :credit]
+  enumerize :currency, in: [:USD, :EUR, :BYN]
 
   scope :debit, ->{ where(expense_type: :debit) }
   scope :credit, ->{ where(expense_type: :credit) }

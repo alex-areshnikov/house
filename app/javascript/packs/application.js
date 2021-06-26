@@ -8,9 +8,6 @@ require("turbolinks").start()
 require("@rails/activestorage").start()
 require('jquery')
 
-require("startbootstrap-sb-admin-2/vendor/fontawesome-free/js/all.min")
-
-
 import "startbootstrap-sb-admin-2/css/sb-admin-2.min.css"
 import "startbootstrap-sb-admin-2/vendor/fontawesome-free/css/all.min.css"
 
