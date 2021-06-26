@@ -4,6 +4,7 @@ class Expense < ApplicationRecord
   belongs_to :owner, polymorphic: true
 
   validates :amount, numericality: { greater_than: 0 }
+  validates :description, presence: true
 
   enumerize :expense_type, in: [:debit, :credit]
 

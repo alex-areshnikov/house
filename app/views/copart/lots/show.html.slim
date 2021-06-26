@@ -12,24 +12,28 @@ h2
   .card-body
     - if @page.expenses?
       .row.border-bottom.font-weight-bold
-        .col-2 Actions
-        .col-6 Description
+        .col-8 Description
         .col-2 Debit
         .col-2 Credit
       - @page.decorated_expenses.each do |expense|
-        .row.border-bottom.highlight-background
-          .col-2
-            | Actions
-          .col-6
-            = expense.description
+        .row.border-bottom.highlight-background.show-on-hoverover-trigger
+          .col-8
+            .d-flex
+              .mr-auto
+                = expense.description
+              .pl-2.show-on-hoverover
+                = link_to edit_vehicle_expense_path(@page.vehicle_id, expense.id), class: "text-primary" do
+                  i.fas.fa-edit
+              .pl-1.show-on-hoverover
+                = link_to vehicle_expense_path(@page.vehicle_id, expense.id), class: "text-danger", method: :delete, data: { confirm: "Are you sure?"} do
+                  i.fas.fa-trash
           .col-2
             = number_to_currency expense.amount_debit
           .col-2
             = number_to_currency expense.amount_credit
 
       .row.border-bottom.border-top.font-weight-bold
-        .col-2 &nbsp;
-        .col-6
+        .col-8
           b Total
         .col-2.text-danger
           = number_to_currency @page.expenses_debit_total
@@ -37,8 +41,7 @@ h2
           = number_to_currency @page.expenses_credit_total
 
       .row.border-bottom.font-weight-bold
-        .col-2 &nbsp;
-        .col-6
+        .col-8
           b Balance
         .col-2 &nbsp;
         .col-2

@@ -5,3 +5,10 @@
 .clickable {
     cursor: pointer;
 }
+
+.show-on-hoverover {
+    display: none;
+}
+.show-on-hoverover-trigger:hover .show-on-hoverover {
+    display: block;
+}

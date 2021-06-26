@@ -1,0 +1,14 @@
+.card.shadow
+  .card-body
+    - url = @expense.new_record? ? vehicle_expenses_path(@page.vehicle_id) : vehicle_expense_path(@page.vehicle_id, @expense.id)
+    = simple_form_for @expense, url: url do |f|
+      = f.error_notification
+
+      = f.input :amount
+      = f.input :description
+      = f.input :expense_type, collection: @page.expense_type_options, prompt: false
+      = f.input :refundable
+      = f.input :refunded
+
+      = f.button :submit, class: "btn btn-primary mr-2"
+      = link_to "Back", copart_lot_path(@page.lot_id), class: "btn btn-outline-secondary"

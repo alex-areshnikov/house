@@ -4,7 +4,6 @@ module Datastorage
       def initialize(vehicle_id, expense_attributes)
         @vehicle_id = vehicle_id
         @expense_attributes = expense_attributes
-        @created = false
       end
 
       def create
@@ -14,7 +13,7 @@ module Datastorage
 
       private
 
-      attr_reader :vehicle_id, :expense_attributes, :created
+      attr_reader :vehicle_id, :expense_attributes
     end
   end
 end
