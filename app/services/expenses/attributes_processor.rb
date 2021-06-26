@@ -19,7 +19,7 @@ module Expenses
     private
 
     def process_currency
-      if attributes[:currency] == :USD
+      if attributes[:currency].to_s == "USD"
         attributes[:usd_amount] = attributes[:amount]
       else
         convert_amount

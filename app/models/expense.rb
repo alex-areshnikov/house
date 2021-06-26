@@ -11,4 +11,6 @@ class Expense < ApplicationRecord
 
   scope :debit, ->{ where(expense_type: :debit) }
   scope :credit, ->{ where(expense_type: :credit) }
+
+  scope :default_order, -> { order(created_at: :asc) }
 end

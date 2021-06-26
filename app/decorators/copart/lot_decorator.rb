@@ -4,7 +4,7 @@ module Copart
     delegate :id, :lot_number, :primary_damage, :secondary_damage, :sale_date, :doc_type,
              :location, :purchased, :aasm, to: :lot
 
-    delegate :name, :vin, :odometer, :engine_type, :photos, :expenses, to: :vehicle
+    delegate :name, :vin, :odometer, :engine_type, :photos, to: :vehicle
 
     FUTURE = "Future".freeze
 
@@ -21,6 +21,10 @@ module Copart
 
     def decorated_expenses
       expenses.map { ::Vehicles::ExpenseDecorator.new(_1) }
+    end
+
+    def expenses
+      vehicle.expenses.default_order
     end
 
     def expenses?

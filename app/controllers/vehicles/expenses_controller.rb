@@ -9,7 +9,7 @@ module Vehicles
     def create
       @expense = ::Datastorage::Creators::VehicleExpense.new(params[:vehicle_id], expense_params).create
 
-      if @expense.valid?
+      if @expense.errors.empty?
         redirect_to copart_lot_path(@page.lot_id)
       else
         render "new"
@@ -23,7 +23,7 @@ module Vehicles
     def update
       @expense = ::Datastorage::Updaters::VehicleExpense.new(params[:vehicle_id], params[:id], expense_params).update
 
-      if @expense.valid?
+      if @expense.errors.empty?
         redirect_to copart_lot_path(@page.lot_id)
       else
         render "edit"
