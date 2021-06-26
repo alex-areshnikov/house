@@ -14,8 +14,14 @@ h2
       - @page.expense_categories.each do |category|
         .pb-5
           - if category
-            h5.text-primary
-              = category
+            .d-flex
+              .mr-auto
+                h5.text-primary
+                  = category
+              div
+                = link_to new_vehicle_expense_path(@page.vehicle_id, category: category), class: "text-primary" do
+                  i.fas.fa-plus
+
           .row.border-bottom.font-weight-bold
             .col-8 Description
             .col-2 Debit

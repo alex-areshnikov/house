@@ -3,7 +3,7 @@ module Vehicles
     before_action :authenticate_user!, :load_page
 
     def new
-      @expense = ::Expense.new
+      @expense = ::Expense.new(category: params[:category])
     end
 
     def create
