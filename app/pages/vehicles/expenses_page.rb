@@ -14,6 +14,12 @@ module Vehicles
       ::Expense.currency.options
     end
 
+    def category_options(expense)
+      options = ::ExpenseCategory.pluck(:name)
+      options << expense.category if expense.category.present?
+      options.uniq.sort
+    end
+
     def lot_id
       lot = ::Datastorage::Finders::CopartLot.by_vehicle_id(vehicle_id)
       lot.id

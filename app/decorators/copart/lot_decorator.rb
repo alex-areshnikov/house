@@ -19,8 +19,12 @@ module Copart
       photos.first.photo.thumb.url
     end
 
-    def decorated_expenses
-      expenses.map { ::Vehicles::ExpenseDecorator.new(_1) }
+    def expense_categories
+      vehicle.expenses.order(:category).pluck(:category).uniq
+    end
+
+    def decorated_expenses_by_category(category)
+      expenses.where(category: category).map { ::Vehicles::ExpenseDecorator.new(_1) }
     end
 
     def expenses

@@ -43,7 +43,7 @@ module Vehicles
     end
 
     def expense_params
-      params.require(:expense).permit(:amount, :description, :expense_type, :currency, :refundable, :refunded)
+      params.require(:expense).permit(:amount, :description, :expense_type, :currency, :category)
     end
   end
 end

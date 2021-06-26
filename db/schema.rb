@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_26_205458) do
+ActiveRecord::Schema.define(version: 2021_06_26_214241) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 2021_06_26_205458) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "currency", default: "USD", null: false
     t.decimal "usd_amount", precision: 10, scale: 2
+    t.string "category", default: "", null: false
     t.index ["owner_type", "owner_id"], name: "index_expenses_on_owner"
   end
 

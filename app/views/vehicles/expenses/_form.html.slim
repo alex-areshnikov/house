@@ -5,11 +5,14 @@
       = f.error_notification
 
       .row
-        .col-12.col-sm-4
+        .col-12.col-sm-6
           = f.input :amount
-        .col-12.col-sm-4
+        .col-12.col-sm-6
           = f.input :currency, collection: @page.currency_options, prompt: false
-        .col-12.col-sm-4
+      .row
+        .col-12.col-sm-6
+          = f.input :category, collection: @page.category_options(@expense), include_blank: "-- None --"
+        .col-12.col-sm-6
           = f.input :expense_type, collection: @page.expense_type_options, prompt: false
 
       = f.input :description
