@@ -4,12 +4,15 @@
     = simple_form_for @expense, url: url do |f|
       = f.error_notification
 
-      = f.input :amount
+      .row
+        .col-12.col-sm-4
+          = f.input :amount
+        .col-12.col-sm-4
+          = f.input :currency, collection: @page.currency_options, prompt: false
+        .col-12.col-sm-4
+          = f.input :expense_type, collection: @page.expense_type_options, prompt: false
+
       = f.input :description
-      = f.input :expense_type, collection: @page.expense_type_options, prompt: false
-      = f.input :currency, collection: @page.currency_options, prompt: false
-      = f.input :refundable
-      = f.input :refunded
 
       = f.button :submit, class: "btn btn-primary mr-2"
       = link_to "Back", copart_lot_path(@page.lot_id), class: "btn btn-outline-secondary"

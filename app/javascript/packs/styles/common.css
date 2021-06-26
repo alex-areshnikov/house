@@ -6,9 +6,26 @@
     cursor: pointer;
 }
 
-.show-on-hoverover {
+.shown-on-hover {
     display: none;
 }
-.show-on-hoverover-trigger:hover .show-on-hoverover {
+
+.hidden-on-hover {
     display: block;
+}
+
+.shown-hidden-trigger:hover .shown-on-hover {
+    display: block;
+}
+
+.shown-hidden-trigger:hover .hidden-on-hover {
+    display: none;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.crossed-out {
+    text-decoration: line-through;
 }
