@@ -36,7 +36,14 @@ ul#accordionSidebar.navbar-nav.bg-gradient-primary.sidebar.sidebar-dark.accordio
       i.fa.fa-fw.fa-book
       span Logs
 
-    hr.sidebar-divider.my-0
+  hr.sidebar-divider.my-0
+
+  li.nav-item
+    = link_to users_path, class: "nav-link" do
+      i.fa.fa-fw.fa-user
+      span Users
+
+  hr.sidebar-divider.my-0
 
   li.nav-item
     = link_to destroy_user_session_path, method: :delete, class: "nav-link" do

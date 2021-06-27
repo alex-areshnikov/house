@@ -1,11 +1,9 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  #
   devise_for :users, controllers: {
     sessions: 'users/sessions',
-    passwords: 'users/passwords'
+    registrations: 'users/registrations'
   }
 
   root "home#index"
@@ -14,6 +12,7 @@ Rails.application.routes.draw do
 
   resources :logs, only: %i[index]
   resources :expense_categories, only: %i[index new create destroy]
+  resources :users, only: %i[index destroy]
 
   resources :vehicles, only: %i[index], module: :vehicles do
     resources :expenses, except: %i[show index]

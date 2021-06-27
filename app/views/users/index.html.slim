@@ -1,0 +1,16 @@
+.d-flex.justify-content-end.mt-4
+  h1.flex-grow-1 Users
+
+.card.shadow
+  .card-body
+    .row.border-bottom.font-weight-bold
+      .col-12 Email
+    - @users.each do |user|
+      .row.border-bottom.highlight-background.shown-hidden-trigger
+        .col-12
+          .d-flex
+            .mr-auto
+              = user.email
+            .pl-1.shown-on-hover
+              = link_to user_path(user), class: "text-danger", method: :delete, data: { confirm: "Are you sure?" } do
+                i.fas.fa-trash
