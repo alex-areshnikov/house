@@ -1,16 +1,17 @@
 module Datastorage
   module Updaters
     class VehicleExpense
-      def initialize(vehicle_id, expense_id, expense_attributes)
+      def initialize(vehicle_id, expense_id, expense_attributes, recalc_amount: true)
         @vehicle_id = vehicle_id
         @expense_id = expense_id
         @expense_attributes = expense_attributes
+        @recalc_amount = recalc_amount
       end
 
       def update
         expense = ::Datastorage::SimpleActions::VehicleExpense.new(vehicle_id, expense_id).find
 
-        processor = ::Expenses::AttributesProcessor.new(expense_attributes)
+        processor = ::Expenses::AttributesProcessor.new(expense_attributes, refresh_rate: refresh_rate?(expense))
         processor.process
 
         if processor.success?
@@ -24,7 +25,11 @@ module Datastorage
 
       private
 
-      attr_reader :vehicle_id, :expense_id, :expense_attributes
+      attr_reader :vehicle_id, :expense_id, :expense_attributes, :recalc_amount
+
+      def refresh_rate?(expense)
+        recalc_amount || expense_attributes[:currency] != expense.currency
+      end
     end
   end
 end

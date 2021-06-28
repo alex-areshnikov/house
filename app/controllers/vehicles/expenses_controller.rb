@@ -21,7 +21,10 @@ module Vehicles
     end
 
     def update
-      @expense = ::Datastorage::Updaters::VehicleExpense.new(params[:vehicle_id], params[:id], expense_params).update
+      @expense = ::Datastorage::Updaters::VehicleExpense.new(params[:vehicle_id],
+                                                             params[:id],
+                                                             expense_params,
+                                                             recalc_amount: params[:recalc_amount].present?).update
 
       if @expense.errors.empty?
         redirect_to copart_lot_path(@page.lot_id)
@@ -43,7 +46,7 @@ module Vehicles
     end
 
     def expense_params
-      params.require(:expense).permit(:amount, :description, :expense_type, :currency, :category)
+      params.require(:expense).permit(:amount, :description, :expense_type, :currency, :category, :rate)
     end
   end
 end

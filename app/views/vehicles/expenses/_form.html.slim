@@ -17,5 +17,12 @@
 
       = f.input :description
 
+      = f.hidden_field :rate
+
+      - unless @expense.new_record?
+        .form-check.form-group
+          = check_box_tag :recalc_amount, "1", false, { class: "form-check-input", id: "recalc-amount-checkbox" }
+          label.form-check-label for="recalc-amount-checkbox" Recalc USD amount
+
       = f.button :submit, class: "btn btn-primary mr-2"
       = link_to "Back", copart_lot_path(@page.lot_id), class: "btn btn-outline-secondary"
