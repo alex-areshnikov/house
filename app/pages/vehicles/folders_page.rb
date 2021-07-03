@@ -66,6 +66,13 @@ module Vehicles
       parent_folder_id == ROOT
     end
 
+    def root_or_folder_id
+      return ROOT if root_folder?
+
+      current_folder_id
+    end
+
+
     def vehicle
       @_vehicle = ::VehicleDecorator.new(::Vehicle.find(vehicle_id))
     end

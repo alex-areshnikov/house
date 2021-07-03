@@ -14,17 +14,21 @@ nav aria-label="breadcrumb"
       i.fas.fa-folder.pr-2
       = child_folder[:name]
 
-- @page.entity_photos.each_slice(4) do |entity_photos_group|
-  .card-group
-    - entity_photos_group.each do |entity_photo|
-      .card.shadow.max-width-200 data-toggle="modal" data-target="#entity-photo-#{entity_photo.id}"
+.row.mx-0
+  - @page.entity_photos.each do |entity_photo|
+    .col-6.col-md-4.col-lg-3.col-xl-2.px-0
+      .card.shadow.shown-hidden-trigger data-toggle="modal" data-target="#entity-photo-#{entity_photo.id}"
+        .position-absolute.right-7.top-7.opacity-8.shown-on-hover
+          = link_to vehicle_photo_path(@page.vehicle_id, entity_photo.id), method: :delete,
+                  class: "btn btn-danger btn-sm btn-circle", data: { confirm: "Are you sure?" } do
+            i.fas.fa-trash
         = image_tag(entity_photo.photo.thumb.url, class: "card-img-top img-thumbnail")
 
-      .modal.fade id="entity-photo-#{entity_photo.id}" tabindex="-1" role="dialog" aria-labelledby="entity-photo-#{entity_photo.id}-title" aria-hidden="true"
-        .modal-dialog.modal-dialog-centered.modal-xl role="document"
-          .modal-content
-            .modal-body
-              img.d-block.w-100 src="#{entity_photo.photo.url}"
+    .modal.fade id="entity-photo-#{entity_photo.id}" tabindex="-1" role="dialog" aria-labelledby="entity-photo-#{entity_photo.id}-title" aria-hidden="true"
+      .modal-dialog.modal-dialog-centered.modal-xl role="document"
+        .modal-content
+          .modal-body
+            img.d-block.w-100 src="#{entity_photo.photo.url}"
 
 - if @page.entity_photos.empty?
   hr.mt-5
@@ -37,13 +41,19 @@ nav aria-label="breadcrumb"
             method: :delete, class: "btn btn-danger mr-2", data: { confirm: "Are you sure?" }
   = link_to "Back", @page.back_path, class: "btn btn-outline-secondary"
 
-.modal.fade id="upload-photos-modal" tabindex="-2" role="dialog" aria-hidden="true"
-  .modal-dialog.modal-dialog-centered role="document"
-    .modal-content
-      .modal-body
-        / = simple_form_for ::Photo.new, url: vehicle_folder_photos_path(@page.vehicle_id, params[:folder_id]) do |f|
+= simple_form_for ::Photo.new, url: vehicle_folder_photos_path(@page.vehicle_id, @page.root_or_folder_id), html: { multipart: true } do |f|
+  .modal.fade id="upload-photos-modal" tabindex="-2" role="dialog" aria-hidden="true"
+    .modal-dialog.modal-dialog-centered role="document"
+      .modal-content
+        .modal-header
+          h5.modal-title Upload photo(s)
+        .modal-body
+          = f.file_field :photo, multiple: true
+        .modal-footer
+          = f.button :submit, "Upload", class: "btn btn-primary"
+          button.btn.btn-secondary type="button" data-dismiss="modal" Close
 
-= simple_form_for ::Folder.new, url: vehicle_parent_folder_folders_path(@page.vehicle_id, @page.root_folder? ? "root" : @page.entity_id) do |f|
+= simple_form_for ::Folder.new, url: vehicle_parent_folder_folders_path(@page.vehicle_id, @page.root_or_folder_id) do |f|
   .modal.fade id="add-folder-modal" tabindex="-3" role="dialog" aria-hidden="true"
     .modal-dialog.modal-dialog-centered role="document"
       .modal-content

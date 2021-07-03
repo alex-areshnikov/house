@@ -21,7 +21,11 @@ Rails.application.routes.draw do
       resources :folders, only: %i[show create destroy]
     end
 
-    resources :folders, only: %i[index]
+    resources :photos, only: %i[destroy]
+
+    resources :folders, only: %i[index] do
+      resources :photos, only: %i[create]
+    end
   end
 
   namespace :copart do

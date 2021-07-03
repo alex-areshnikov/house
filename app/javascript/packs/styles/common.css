@@ -29,3 +29,15 @@
 .crossed-out {
     text-decoration: line-through;
 }
+
+.right-7 {
+    right: 7px;
+}
+
+.top-7 {
+    top: 7px;
+}
+
+.opacity-8 {
+    opacity: .8;
+}
