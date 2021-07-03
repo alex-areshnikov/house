@@ -16,9 +16,12 @@ Rails.application.routes.draw do
 
   resources :vehicles, only: %i[index], module: :vehicles do
     resources :expenses, except: %i[show index]
-    resources :folders, only: %i[destroy] do
-      resources :photos, only: %i[index create]
+
+    resources :parent_folder, only: %i[] do
+      resources :folders, only: %i[show create destroy]
     end
+
+    resources :folders, only: %i[index]
   end
 
   namespace :copart do

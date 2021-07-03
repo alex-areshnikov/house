@@ -10,9 +10,9 @@ nav aria-label="breadcrumb"
 
 .mb-2
   - @page.child_folders.each do |child_folder|
-    = link_to vehicle_folder_photos_path(@page.vehicle_id, child_folder.id), class: "btn btn-dark btn-sm mx-1" do
+    = link_to child_folder[:path], class: "btn btn-dark btn-sm mx-1" do
       i.fas.fa-folder.pr-2
-      = child_folder.name
+      = child_folder[:name]
 
 - @page.entity_photos.each_slice(4) do |entity_photos_group|
   .card-group
@@ -33,17 +33,17 @@ nav aria-label="breadcrumb"
   button.btn.btn-primary.mr-2 data-toggle="modal" data-target="#upload-photos-modal" Upload Photo(s)
   button.btn.btn-primary.mr-2 data-toggle="modal" data-target="#add-folder-modal" Add folder
   - unless @page.root_folder?
-    = link_to "Delete \"#{@page.entity_name}\" folder", vehicle_folder_path(@page.vehicle_id, @page.entity_id),
+    = link_to "Delete \"#{@page.entity_name}\" folder", vehicle_parent_folder_folder_path(@page.vehicle_id, @page.parent_folder_id, @page.entity_id),
             method: :delete, class: "btn btn-danger mr-2", data: { confirm: "Are you sure?" }
   = link_to "Back", @page.back_path, class: "btn btn-outline-secondary"
 
 .modal.fade id="upload-photos-modal" tabindex="-2" role="dialog" aria-hidden="true"
-  .modal-dialog.modal-dialog-centered.modal-xl role="document"
+  .modal-dialog.modal-dialog-centered role="document"
     .modal-content
       .modal-body
-        h2 Upload Photo(s)
+        / = simple_form_for ::Photo.new, url: vehicle_folder_photos_path(@page.vehicle_id, params[:folder_id]) do |f|
 
-= simple_form_for ::Folder.new, url: vehicle_folder_photos_path(@page.vehicle_id, params[:folder_id]) do |f|
+= simple_form_for ::Folder.new, url: vehicle_parent_folder_folders_path(@page.vehicle_id, @page.root_folder? ? "root" : @page.entity_id) do |f|
   .modal.fade id="add-folder-modal" tabindex="-3" role="dialog" aria-hidden="true"
     .modal-dialog.modal-dialog-centered role="document"
       .modal-content
