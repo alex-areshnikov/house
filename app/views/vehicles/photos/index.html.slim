@@ -1,0 +1,56 @@
+nav aria-label="breadcrumb"
+  ol.breadcrumb
+    - @page.breadcrumbs.each do |breadcrumb|
+      li.breadcrumb-item
+        - if breadcrumb[:path].nil?
+          .text-dark
+            = breadcrumb[:name]
+        - else
+          = link_to breadcrumb[:name], breadcrumb[:path]
+
+.mb-2
+  - @page.child_folders.each do |child_folder|
+    = link_to vehicle_folder_photos_path(@page.vehicle_id, child_folder.id), class: "btn btn-dark btn-sm mx-1" do
+      i.fas.fa-folder.pr-2
+      = child_folder.name
+
+- @page.entity_photos.each_slice(4) do |entity_photos_group|
+  .card-group
+    - entity_photos_group.each do |entity_photo|
+      .card.shadow.max-width-200 data-toggle="modal" data-target="#entity-photo-#{entity_photo.id}"
+        = image_tag(entity_photo.photo.thumb.url, class: "card-img-top img-thumbnail")
+
+      .modal.fade id="entity-photo-#{entity_photo.id}" tabindex="-1" role="dialog" aria-labelledby="entity-photo-#{entity_photo.id}-title" aria-hidden="true"
+        .modal-dialog.modal-dialog-centered.modal-xl role="document"
+          .modal-content
+            .modal-body
+              img.d-block.w-100 src="#{entity_photo.photo.url}"
+
+- if @page.entity_photos.empty?
+  hr.mt-5
+
+.d-flex.mt-2
+  button.btn.btn-primary.mr-2 data-toggle="modal" data-target="#upload-photos-modal" Upload Photo(s)
+  button.btn.btn-primary.mr-2 data-toggle="modal" data-target="#add-folder-modal" Add folder
+  - unless @page.root_folder?
+    = link_to "Delete \"#{@page.entity_name}\" folder", vehicle_folder_path(@page.vehicle_id, @page.entity_id),
+            method: :delete, class: "btn btn-danger mr-2", data: { confirm: "Are you sure?" }
+  = link_to "Back", @page.back_path, class: "btn btn-outline-secondary"
+
+.modal.fade id="upload-photos-modal" tabindex="-2" role="dialog" aria-hidden="true"
+  .modal-dialog.modal-dialog-centered.modal-xl role="document"
+    .modal-content
+      .modal-body
+        h2 Upload Photo(s)
+
+= simple_form_for ::Folder.new, url: vehicle_folder_photos_path(@page.vehicle_id, params[:folder_id]) do |f|
+  .modal.fade id="add-folder-modal" tabindex="-3" role="dialog" aria-hidden="true"
+    .modal-dialog.modal-dialog-centered role="document"
+      .modal-content
+        .modal-header
+          h5.modal-title Add folder
+        .modal-body
+          = f.input :name
+        .modal-footer
+          = f.button :submit, class: "btn btn-primary"
+          button.btn.btn-secondary type="button" data-dismiss="modal" Close

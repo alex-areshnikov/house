@@ -10,27 +10,12 @@
         .d-flex
           h5.card-title.flex-grow-1
             = "Lot #{lot.lot_number}"
-          - unless @page.suppress_vehicle_actions?
-            - if @page.purchased?
-              = link_to copart_lot_path(lot.id) do
-                i.fas.fa-eye
-            - else
-              span.pr-5.state-field
-                = lot.state_text
-              span.pr-1
-                = link_to copart_command_path(lot.id, command: ::Copart::NodeCommandSender::WATCH_AUCTION_COMMAND), data: { turbolinks: false, confirm: "Are you sure?" } do
-                  i.fas.fa-gavel
-              span.pr-1
-                = link_to copart_command_path(lot.id, command: ::Copart::NodeCommandSender::SCAN_LOT_COMMAND), data: { turbolinks: false, confirm: "Are you sure?" } do
-                  i.fas.fa-undo
-              = link_to edit_copart_lot_path(lot.id) do
-                i.fas.fa-edit
-              - if lot.purchased
-                = link_to copart_lot_path(lot.id) do
-                  i.fas.fa-eye
-              - else
-                = link_to copart_lot_path(lot.id, query: params.permit![:query]), method: :delete, class: "text-danger", data: { confirm: "Are you sure?" } do
-                  i.fas.fa-trash-alt
+          span.pr-5.state-field
+            = lot.state_text
+
+          - actions.each do |action|
+            span.pr-1
+              = render partial: "/copart/lots/actions/#{action}", locals: { lot: lot}
         .row
           .col-2
             label Name

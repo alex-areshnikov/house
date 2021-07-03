@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_27_232225) do
+ActiveRecord::Schema.define(version: 2021_07_02_233828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,15 @@ ActiveRecord::Schema.define(version: 2021_06_27_232225) do
     t.string "category", default: "", null: false
     t.decimal "rate", precision: 10, scale: 5, default: "1.0", null: false
     t.index ["owner_type", "owner_id"], name: "index_expenses_on_owner"
+  end
+
+  create_table "folders", force: :cascade do |t|
+    t.string "name"
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["owner_type", "owner_id"], name: "index_folders_on_owner"
   end
 
   create_table "holodilnic_sensors_data", force: :cascade do |t|

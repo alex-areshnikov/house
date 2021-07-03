@@ -1,12 +1,9 @@
 h2
   = @page.name
 
-= render partial: "vehicle_card", locals: { lot: @page.lot }
+= render partial: "vehicle_card", locals: { lot: @page.lot, actions: @page.actions }
 
-.d-flex.justify-content-end.mt-4
-  h1.flex-grow-1 Expenses
-  = link_to new_vehicle_expense_path(@page.vehicle_id), class: "btn btn-primary btn-circle mt-2" do
-    i.fas.fa-plus
+h1.mt-4 Expenses
 
 .card.shadow
   .card-body
@@ -85,6 +82,8 @@ h2
               = number_to_currency @page.expenses_grand_total
     - else
       h4 No expenses
+      = link_to "Add expense", new_vehicle_expense_path(@page.vehicle_id)
+
 
 .mt-4
   = link_to "Back", copart_lots_path(purchased: 1), class: "btn btn-outline-secondary"

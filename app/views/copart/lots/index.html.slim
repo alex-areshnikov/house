@@ -40,7 +40,7 @@
 
 .row
   - @page.main_lots.each do |lot|
-    = render partial: "vehicle_card", locals: { lot: lot }
+    = render partial: "vehicle_card", locals: { lot: lot, actions: @page.actions }
 
 
 .d-flex.justify-content-center.mt-3

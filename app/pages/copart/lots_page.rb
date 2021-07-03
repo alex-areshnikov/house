@@ -74,8 +74,8 @@ module Copart
       [nil] + ::Vehicle.distinct(:model).where(make: ransack_query["make_eq"]).order(:model).pluck(:model).compact
     end
 
-    def suppress_vehicle_actions?
-      false
+    def actions
+      purchased ? %i[show_lot show_photos] : %i[watch_auction scan_lot show_photos edit_lot delete_lot]
     end
 
     private

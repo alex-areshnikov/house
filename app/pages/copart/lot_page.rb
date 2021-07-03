@@ -12,8 +12,8 @@ module Copart
       @lot = ::Copart::LotDecorator.new(::CopartLot.find(copart_lot_id))
     end
 
-    def suppress_vehicle_actions?
-      true
+    def actions
+      [:show_photos]
     end
 
     def expenses_debit_total_by_category(category)
