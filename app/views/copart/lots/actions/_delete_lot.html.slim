@@ -1,6 +1,5 @@
 - if lot.purchased
+  = render partial: "/copart/lots/actions/show_lot", locals: { lot: lot }
+- else
   = link_to copart_lot_path(lot.id, query: params.permit![:query]), method: :delete, class: "text-danger", data: { confirm: "Are you sure?" } do
     i.fas.fa-trash-alt
-- else
-  = render partial: "/copart/lots/actions/show_lot", locals: { lot: lot }
-

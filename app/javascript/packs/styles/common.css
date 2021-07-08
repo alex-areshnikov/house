@@ -30,6 +30,10 @@
     text-decoration: line-through;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 .right-7 {
     right: 7px;
 }
@@ -40,4 +44,8 @@
 
 .opacity-8 {
     opacity: .8;
+}
+
+.min-height-100 {
+    min-height: 100px;
 }

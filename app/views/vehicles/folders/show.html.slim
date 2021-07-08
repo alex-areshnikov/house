@@ -14,28 +14,34 @@ nav aria-label="breadcrumb"
       i.fas.fa-folder.pr-2
       = child_folder[:name]
 
+  .btn.btn-dark.btn-sm.mx-1 data-toggle="modal" data-target="#add-folder-modal"
+    i.fas.fa-folder-plus
+
 .row.mx-0
   - @page.entity_photos.each do |entity_photo|
     .col-6.col-md-4.col-lg-3.col-xl-2.px-0
-      .card.shadow.shown-hidden-trigger data-toggle="modal" data-target="#entity-photo-#{entity_photo.id}"
+      .card.shadow.shown-hidden-trigger.cursor-pointer data-toggle="modal" data-target="#entity-photo-#{entity_photo.id}"
         .position-absolute.right-7.top-7.opacity-8.shown-on-hover
           = link_to vehicle_photo_path(@page.vehicle_id, entity_photo.id), method: :delete,
                   class: "btn btn-danger btn-sm btn-circle", data: { confirm: "Are you sure?" } do
             i.fas.fa-trash
         = image_tag(entity_photo.photo.thumb.url, class: "card-img-top img-thumbnail")
 
-    .modal.fade id="entity-photo-#{entity_photo.id}" tabindex="-1" role="dialog" aria-labelledby="entity-photo-#{entity_photo.id}-title" aria-hidden="true"
-      .modal-dialog.modal-dialog-centered.modal-xl role="document"
-        .modal-content
-          .modal-body
-            img.d-block.w-100 src="#{entity_photo.photo.url}"
+      .modal.fade id="entity-photo-#{entity_photo.id}" tabindex="-1" role="dialog" aria-labelledby="entity-photo-#{entity_photo.id}-title" aria-hidden="true"
+        .modal-dialog.modal-dialog-centered.modal-xl role="document"
+          .modal-content
+            .modal-body
+              img.d-block.w-100 src="#{entity_photo.photo.url}"
+
+  .col-6.col-md-4.col-lg-3.col-xl-2.px-0.d-flex data-toggle="modal" data-target="#upload-photos-modal"
+    .card.shadow.shown-hidden-trigger.cursor-pointer.h-100.w-100.min-height-100
+      .card-img-top.img-thumbnail.h-100.d-flex.justify-content-center.align-items-center
+        i.fas.fa-plus-circle.fa-3x.text-dark.rounded-circle.p-2
 
 - if @page.entity_photos.empty?
   hr.mt-5
 
 .d-flex.mt-2
-  button.btn.btn-primary.mr-2 data-toggle="modal" data-target="#upload-photos-modal" Upload Photo(s)
-  button.btn.btn-primary.mr-2 data-toggle="modal" data-target="#add-folder-modal" Add folder
   - unless @page.root_folder?
     = link_to "Delete \"#{@page.entity_name}\" folder", vehicle_parent_folder_folder_path(@page.vehicle_id, @page.parent_folder_id, @page.entity_id),
             method: :delete, class: "btn btn-danger mr-2", data: { confirm: "Are you sure?" }

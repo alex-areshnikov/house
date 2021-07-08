@@ -18,9 +18,7 @@ module Vehicles
       @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], params[:parent_folder_id])
       folder = ::Folder.create(folder_params.merge(owner: @page.parent_entity))
 
-      if folder.valid?
-        flash[:notice] = "Folder was created successfully."
-      else
+      unless folder.valid?
         flash[:alert] = "Error creating #{folder.name} folder. #{folder.errors.full_messages.first}."
       end
 
