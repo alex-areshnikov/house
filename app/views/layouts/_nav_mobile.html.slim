@@ -1,0 +1,49 @@
+.d-block.d-md-none
+  nav class="navbar navbar-light bg-light px-0 pb-0 pt-2"
+    button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
+      span class="navbar-toggler-icon"
+
+    div class="collapse navbar-collapse" id="navbarNavDropdown"
+      hr
+      ul class="navbar-nav"
+        li.nav-item
+          = link_to root_path, class: "nav-link" do
+            i.fa.fa-fw.fa-home
+            span Home
+
+
+        li class="nav-item dropdown"
+          a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCopart" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            i.fas.fa-fw.fa-car
+            span Copart
+
+          .dropdown-menu aria-labelledby="navbarDropdownCopart"
+            = link_to "Copart Lots", copart_lots_path, class: "dropdown-item"
+            = link_to "Purchased Vehicles", copart_lots_path(purchased: 1), class: "dropdown-item"
+
+        li class="nav-item dropdown"
+          a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUtil" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            i.fas.fa-fw.fa-wrench
+            span Utilities
+
+          .dropdown-menu aria-labelledby="navbarDropdownUtil"
+            = link_to "Copart Lots Maintenance", copart_lots_processors_path, class: "dropdown-item"
+            = link_to "Sidekiq", sidekiq_web_path, class: "dropdown-item"
+            = link_to "Expense Categories", expense_categories_path, class: "dropdown-item"
+
+        li.nav-item
+          = link_to logs_path, class: "nav-link" do
+            i.fa.fa-fw.fa-book
+            span Logs
+
+        li.nav-item
+          = link_to users_path, class: "nav-link" do
+            i.fa.fa-fw.fa-user
+            span Users
+
+        li.nav-item
+          = link_to destroy_user_session_path, method: :delete, class: "nav-link" do
+            i.fa.fa-fw.fa-sign-out-alt
+            span Logout
+
+  hr

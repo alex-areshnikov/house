@@ -8,6 +8,8 @@ html
 
       div#content-wrapper.d-flex.flex-column
         .container-fluid
+          = render "layouts/nav_mobile"
+
           = content_tag :p, notice, class: "mt-3 alert alert-info" if notice.present?
           = content_tag :p, alert, class: "mt-3 alert alert-danger" if alert.present?
 
