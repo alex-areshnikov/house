@@ -1,47 +1,55 @@
 .card.shadow.col-12.mb-2 data-lot-id="#{lot.id}"
   .card-body
     .row.align-items-center
-      .p-1
+      .col-12.col-xl-auto
         - if lot.photos?
           a data-toggle="modal" data-target="#photo-carousel-modal-#{lot.id}"
             = image_tag(lot.photo_thumb_url, class: "img-thumbnail")
           = render partial: "photo_carousel_modal", locals: { lot: lot }
-      .col-md
-        .d-flex
-          h5.card-title.flex-grow-1
-            = "Lot #{lot.lot_number}"
-          span.pr-5.state-field
-            = lot.state_text
+      .col
+        .row
+          .col
+            .mt-3.d-block.d-lg-none
+            h5.card-title.flex-grow-1
+              = "Lot #{lot.lot_number}"
+          .col-auto
+            .mt-3.d-block.d-lg-none
+            span.pr-5.state-field
+              = lot.state_text
 
-          - actions.each do |action|
-            span.pr-1
-              = render partial: "/copart/lots/actions/#{action}", locals: { lot: lot}
+            - actions.each do |action|
+              span.pr-1
+                = render partial: "/copart/lots/actions/#{action}", locals: { lot: lot}
+
         .row
-          .col-2
-            label Name
-          .col-4
-            = link_to(lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank") if lot.name.present?
-          .col-2
-            label Doc Type
-          .col-4 #{lot.doc_type}
-        .row
-          .col-2
-            label VIN
-          .col-4 #{lot.vin}
-          .col-2
-            label Odometer
-          .col-3 #{lot.odometer}
-        .row
-          .col-2
-            label Damage
-          .col-4 #{lot.damage}
-          .col-2
-            label Engine Type
-          .col-4 #{lot.engine_type}
-        .row
-          .col-2
-            label Sale Date
-          .col-4 class="#{lot.sale_date_text_class}" #{lot.sale_date_text}
-          .col-2
-            label Location
-          .col-4 #{lot.location}
+          .col-12.col-lg-6
+            table.table-sm
+              tbody
+                tr.align-items-center
+                  td.font-weight-bold Name
+                  td
+                    = link_to(lot.name, "https://www.copart.com/lot/#{lot.lot_number}", target: "_blank") if lot.name.present?
+                tr
+                  td.font-weight-bold VIN
+                  td #{lot.vin}
+                tr
+                  td.font-weight-bold Damage
+                  td #{lot.damage}
+                tr
+                  td.font-weight-bold.text-nowrap Sale Date
+                  td class="#{lot.sale_date_text_class}" #{lot.sale_date_text}
+          .col-12.col-lg-6
+            table.table-sm
+              tbody
+                tr
+                  td.font-weight-bold.text-nowrap Doc Type
+                  td #{lot.doc_type}
+                tr
+                  td.font-weight-bold Odometer
+                  td #{lot.odometer}
+                tr
+                  td.font-weight-bold.text-nowrap Engine Type
+                  td #{lot.engine_type}
+                tr
+                  td.font-weight-bold Location
+                  td #{lot.location}
