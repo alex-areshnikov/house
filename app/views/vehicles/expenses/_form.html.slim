@@ -25,4 +25,4 @@
           label.form-check-label for="recalc-amount-checkbox" Recalc USD amount
 
       = f.button :submit, class: "btn btn-primary mr-2"
-      = link_to "Back", copart_lot_path(@page.lot_id), class: "btn btn-outline-secondary"
+      = link_to "Back", url_for(:back), class: "btn btn-outline-secondary"

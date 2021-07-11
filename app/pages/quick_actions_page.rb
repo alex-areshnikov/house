@@ -13,7 +13,7 @@ class QuickActionsPage
   end
 
   def vehicles
-    ::Vehicle.purchased.map { ::VehicleDecorator.new(_1) }
+    ::Vehicle.order(:created_at).purchased.map { ::VehicleDecorator.new(_1) }
   end
 
   def action_path(vehicle_id)

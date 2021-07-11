@@ -1,12 +1,13 @@
-h3 #{@page.action_code.humanize} - Select Vehicle
+h5.d-block.d-md-none #{@page.action_code.humanize} - Select Vehicle
+h3.d-none.d-md-block #{@page.action_code.humanize} - Select Vehicle
 
 - @page.vehicles.each do |vehicle|
   .card.mb-1.cursor-pointer
     = link_to @page.action_path(vehicle.id) do
       .row
-        .col-auto
+        .col-auto.pr-0
           = image_tag(vehicle.photo_thumb_url, class: "height-100 p-2")
-        .col.align-self-center
+        .col.align-self-center.p-0
           = vehicle.name
 
 .mt-3

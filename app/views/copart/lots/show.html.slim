@@ -1,9 +1,11 @@
-h2
-  = @page.name
+h5.d-block.d-md-none #{@page.name}
+h3.d-none.d-md-block #{@page.name}
 
 = render partial: "vehicle_card", locals: { lot: @page.lot, actions: @page.actions }
 
-h1.mt-4 Expenses
+.mt-4
+  h5.d-block.d-md-none Expenses
+  h3.d-none.d-md-block Expenses
 
 .card.shadow
   .card-body
