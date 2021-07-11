@@ -1,3 +1,17 @@
+@import "startbootstrap-sb-admin-2/vendor/bootstrap/scss/_functions.scss";
+@import "startbootstrap-sb-admin-2/vendor/bootstrap/scss/_variables.scss";
+@import "startbootstrap-sb-admin-2/vendor/bootstrap/scss/mixins/_breakpoints.scss";
+
+.smaller-font-before-sm {
+    font-size:0.7rem;
+}
+
+@include media-breakpoint-up(sm) {
+    .smaller-font-before-sm {
+        font-size:inherit;
+    }
+}
+
 .highlight-background:hover {
     background-color: #ffa
 }
@@ -48,4 +62,12 @@
 
 .min-height-100 {
     min-height: 100px;
+}
+
+.inner-td-min-width-75 td {
+    min-width: 75px;
+}
+
+.sidebar {
+    height: 100%!important;
 }

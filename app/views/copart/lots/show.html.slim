@@ -9,7 +9,7 @@ h1.mt-4 Expenses
   .card-body
     - if @page.expenses?
       - @page.expense_categories.each do |category|
-        .pb-5
+        .pb-5.smaller-font-before-sm
           - if category
             .d-flex
               .mr-auto
@@ -20,19 +20,19 @@ h1.mt-4 Expenses
                   i.fas.fa-plus
 
           .row.border-bottom.font-weight-bold
-            .col-8 Description
-            .col-2 Debit
-            .col-2 Credit
+            .col-6.col-lg-8 Description
+            .col-3.col-lg-2 Debit
+            .col-3.col-lg-2 Credit
           - @page.decorated_expenses_by_category(category).each do |expense|
             .row.border-bottom.highlight-background.shown-hidden-trigger
-              .col-8
+              .col-6.col-lg-8
                 = expense.description
-              .col-2.shown-hidden-trigger class="#{expense.extra_html_classes}"
+              .col-3.col-lg-2.shown-hidden-trigger class="#{expense.extra_html_classes}"
                 span.hidden-on-hover
                   = number_to_currency expense.amount_debit
                 span.shown-on-hover
                   = number_to_currency expense.original_amount_debit, unit: expense.unit
-              .col-2 class="#{expense.extra_html_classes}"
+              .col-3.col-lg-2 class="#{expense.extra_html_classes}"
                 .d-flex
                   .mr-auto
                     span.hidden-on-hover
@@ -47,39 +47,40 @@ h1.mt-4 Expenses
                       i.fas.fa-trash
 
           .row.border-bottom.border-top.font-weight-bold
-            .col-8
+            .col-6.col-lg-8
               b Total
-            .col-2.text-danger
+            .col-3.col-lg-2.text-danger
               = number_to_currency @page.expenses_debit_total_by_category(category)
 
-            .col-2.text-success
+            .col-3.col-lg-2.text-success
               = number_to_currency @page.expenses_credit_total_by_category(category)
 
           .row.border-bottom.font-weight-bold
-            .col-8
+            .col-6.col-lg-8
               b Balance
-            .col-2 &nbsp;
-            .col-2
+            .col-3.col-lg-2 &nbsp;
+            .col-3.col-lg-2
               b
                 = number_to_currency @page.expenses_grand_total_by_category(category)
 
       - if @page.expense_categories.size > 1
-        .row.border-bottom.border-top.font-weight-bold
-          .col-8
-            b Grand Total
-          .col-2.text-danger
-            = number_to_currency @page.expenses_debit_total
+        .smaller-font-before-sm
+          .row.border-bottom.border-top.font-weight-bold
+            .col-6.col-lg-8
+              b Grand Total
+            .col-3.col-lg-2.text-danger
+              = number_to_currency @page.expenses_debit_total
 
-          .col-2.text-success
-            = number_to_currency @page.expenses_credit_total
+            .col-3.col-lg-2.text-success
+              = number_to_currency @page.expenses_credit_total
 
-        .row.border-bottom.font-weight-bold
-          .col-8
-            b Grand Balance
-          .col-2 &nbsp;
-          .col-2
-            b
-              = number_to_currency @page.expenses_grand_total
+          .row.border-bottom.font-weight-bold
+            .col-6.col-lg-8
+              b Grand Balance
+            .col-3.col-lg-2 &nbsp;
+            .col-3.col-lg-2
+              b
+                = number_to_currency @page.expenses_grand_total
     - else
       h4 No expenses
       = link_to "Add expense", new_vehicle_expense_path(@page.vehicle_id)

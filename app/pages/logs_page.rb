@@ -26,11 +26,11 @@ class LogsPage
 
   def log_row(log)
     content_tag(:div, class: "row border-bottom highlight-background") do
-      content_tag(:div, class: "col-6 col-lg-3") do
+      content_tag(:div, class: "col-12 col-lg-3") do
         [log_timestamp(log), decorated_log_level(log), screenshot_icon(log)].compact.join.html_safe
       end +
 
-      content_tag(:div, class: "col-6 col-lg-2") do
+      content_tag(:div, class: "col-12 col-lg-2") do
         log.source
       end +
 
