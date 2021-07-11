@@ -2,7 +2,10 @@ h1 Quick Actions
 
 .row.mb-2
   .col.col-md-4.col-xl-3
-    = link_to "Add Expense", "#", class: "btn btn-primary w-100"
+    = link_to "Add Expense", quick_action_path(:add_expense), class: "btn btn-success w-100"
 .row.mb-2
   .col.col-md-4.col-xl-3
-    = link_to "Add Photo", "#", class: "btn btn-primary w-100"
+    = link_to "Upload Photo", quick_action_path(:upload_photo), class: "btn btn-success w-100"
+.row.mb-2
+  .col.col-md-4.col-xl-3
+    = link_to "Show Expenses", quick_action_path(:show_expenses), class: "btn btn-primary w-100"

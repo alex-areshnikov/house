@@ -1,0 +1,13 @@
+h3 #{@page.action_code.humanize} - Select Vehicle
+
+- @page.vehicles.each do |vehicle|
+  .card.mb-1.cursor-pointer
+    = link_to @page.action_path(vehicle.id) do
+      .row
+        .col-auto
+          = image_tag(vehicle.photo_thumb_url, class: "height-100 p-2")
+        .col.align-self-center
+          = vehicle.name
+
+.mt-3
+  = link_to "Back", root_path, class: "btn btn-outline-secondary"

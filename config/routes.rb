@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :logs, only: %i[index]
   resources :expense_categories, only: %i[index new create destroy]
   resources :users, only: %i[index destroy]
+  resources :quick_actions, param: :action_code, only: %i[show]
 
   resources :vehicles, only: %i[index], module: :vehicles do
     resources :expenses, except: %i[show index]
@@ -24,7 +25,13 @@ Rails.application.routes.draw do
     resources :photos, only: %i[destroy]
 
     resources :folders, only: %i[index] do
-      resources :photos, only: %i[create]
+      resources :photos, only: %i[new create]
+    end
+
+    resources :quick_actions, param: :code, only: %i[] do
+      namespace :folders do
+        resource :selector, only: %i[show]
+      end
     end
   end
 

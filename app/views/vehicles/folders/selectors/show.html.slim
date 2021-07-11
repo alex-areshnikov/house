@@ -1,0 +1,11 @@
+h3 #{@page.vehicle_name} - Select folder
+
+- @page.folders.each do |folder|
+  .row.cursor-pointer
+    .col-12
+      = link_to new_vehicle_folder_photo_path(@page.vehicle_id, folder[:id]), class: "btn btn-dark btn-sm m-1" do
+        i.fas.fa-folder.pr-2
+        = folder[:name]
+
+.mx-1.mt-3
+  = link_to "Back", quick_action_path(@page.action_code), class: "btn btn-outline-secondary"

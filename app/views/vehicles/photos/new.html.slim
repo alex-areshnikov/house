@@ -1,0 +1,11 @@
+h3 #{@page.vehicle_name} - Upload photo(s)
+
+= simple_form_for ::Photo.new, url: vehicle_folder_photos_path(@page.vehicle_id, @page.root_or_folder_id), html: { multipart: true } do |f|
+  = f.error_notification
+
+  .form-group
+    = f.file_field :photo, multiple: true
+
+  = f.button :submit, "Upload", class: "btn btn-primary"
+  = link_to "Back", vehicle_quick_action_folders_selector_path(@page.vehicle_id, :upload_photo), class: "btn btn-outline-secondary ml-2"
+

@@ -15,15 +15,26 @@ module Vehicles
       @current_folder_id = current_folder_id
     end
 
-    def breadcrumbs(current_obj = entity, breadcrumbs_build = [])
+    def calc_parent_folder_id!
+      return if current_folder_id == ROOT
+      return unless current_folder.is_a? ::Folder
+
+      @parent_folder_id = current_folder.owner_id
+    end
+
+    def breadcrumbs_all(current_obj = entity, breadcrumbs_build = [])
       if current_obj.is_a? ::Folder
         parent_folder_id = (current_obj.owner.is_a?(::Folder) ? current_obj.owner_id : ROOT)
         path = vehicle_parent_folder_folder_path(vehicle_id, parent_folder_id, current_obj.id)
         breadcrumbs_build.unshift(name: current_obj.name, path: path)
-        breadcrumbs(current_obj.owner, breadcrumbs_build)
+        breadcrumbs_all(current_obj.owner, breadcrumbs_build)
       else
         breadcrumbs_build.unshift(name: vehicle_name, path: vehicle_folders_path(vehicle_id))
       end
+    end
+
+    def breadcrumbs
+      breadcrumbs_build = breadcrumbs_all
 
       last_element = breadcrumbs_build.delete_at(-1)
       breadcrumbs_build << { name: last_element[:name] }
@@ -33,6 +44,10 @@ module Vehicles
       return copart_lots_path(purchased: 1) if root_folder?
 
       breadcrumbs[-2][:path]
+    end
+
+    def folder_path
+      breadcrumbs_all[-1][:path]
     end
 
     def parent_folder_redirect_path
@@ -71,7 +86,6 @@ module Vehicles
 
       current_folder_id
     end
-
 
     def vehicle
       @_vehicle = ::VehicleDecorator.new(::Vehicle.find(vehicle_id))

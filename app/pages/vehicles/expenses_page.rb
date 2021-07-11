@@ -24,5 +24,9 @@ module Vehicles
       lot = ::Datastorage::Finders::CopartLot.by_vehicle_id(vehicle_id)
       lot.id
     end
+
+    def vehicle_name
+      ::Vehicle.find(vehicle_id).name
+    end
   end
 end
