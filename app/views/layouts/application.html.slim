@@ -2,7 +2,7 @@ doctype html
 html
   = render "layouts/head"
 
-  body
+  body.sidebar-toggled
     div#wrapper
       = render "layouts/nav"
 
@@ -15,3 +15,5 @@ html
 
           = content_tag :p
             = yield
+
+    = javascript_pack_tag 'application_bottom', 'data-turbolinks-track': 'reload'

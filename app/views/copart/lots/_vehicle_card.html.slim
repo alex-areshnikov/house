@@ -1,7 +1,7 @@
 .card.shadow.col-12.mb-2 data-lot-id="#{lot.id}"
   .card-body
     .row.align-items-center
-      .col-12.col-xl-auto
+      .col-12.col-lg-auto
         - if lot.photos?
           a data-toggle="modal" data-target="#photo-carousel-modal-#{lot.id}"
             = image_tag(lot.photo_thumb_url, class: "img-thumbnail")
