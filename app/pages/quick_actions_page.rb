@@ -3,11 +3,6 @@ class QuickActionsPage
 
   attr_reader :action_code
 
-  PATH_MAPPING = {
-    add_expense: :new_vehicle_expense_path,
-    show_expenses: :copart_lot
-  }
-
   def initialize(action_code)
     @action_code = action_code
   end
@@ -32,5 +27,9 @@ class QuickActionsPage
 
   def build_show_expenses_path(vehicle_id)
     copart_lot_path(::CopartLot.find_by(vehicle_id: vehicle_id))
+  end
+
+  def build_show_photos_path(vehicle_id)
+    vehicle_folders_path(vehicle_id)
   end
 end

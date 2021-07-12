@@ -5,17 +5,17 @@ module Vehicles
     ROOT = "root"
 
     def index
-      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id])
+      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], current_folder_id: ::Vehicles::FoldersPage::ROOT, edit_mode: params[:edit].present?)
 
       render :show
     end
 
     def show
-      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], params[:parent_folder_id], params[:id])
+      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], current_folder_id: params[:id], edit_mode: params[:edit].present?)
     end
 
     def create
-      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], params[:parent_folder_id])
+      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], parent_folder_id: params[:parent_folder_id])
       folder = ::Folder.create(folder_params.merge(owner: @page.parent_entity))
 
       unless folder.valid?
@@ -26,10 +26,11 @@ module Vehicles
     end
 
     def destroy
-      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], params[:parent_folder_id], params[:id])
+      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], current_folder_id: params[:id])
+      redirect_path = @page.parent_folder_redirect_path
       @page.destroy_current_folder
 
-      redirect_to @page.parent_folder_redirect_path
+      redirect_to redirect_path
     end
 
     private

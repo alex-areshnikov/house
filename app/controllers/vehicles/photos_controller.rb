@@ -3,8 +3,7 @@ module Vehicles
     before_action :authenticate_user!
 
     def new
-      @page = Vehicles::FoldersPage.new(params[:vehicle_id], nil, params[:folder_id])
-      @page.calc_parent_folder_id!
+      @page = ::Vehicles::FoldersPage.new(params[:vehicle_id], current_folder_id: params[:folder_id])
     end
 
     def create
@@ -14,17 +13,10 @@ module Vehicles
       else
         ::Datastorage::Creators::VehiclePhotos.new(params[:vehicle_id], params[:folder_id], photo_params[:photo], photo_params[:description]).create
 
-        page = Vehicles::FoldersPage.new(params[:vehicle_id], nil, params[:folder_id])
-        page.calc_parent_folder_id!
+        page = ::Vehicles::FoldersPage.new(params[:vehicle_id], current_folder_id: params[:folder_id])
 
         redirect_to page.folder_path
       end
-    end
-
-    def destroy
-      ::Photo.find(params[:id]).destroy
-
-      redirect_back(fallback_location: vehicle_folders_path(params[:vehicle_id]))
     end
 
     private

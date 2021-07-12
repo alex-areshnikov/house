@@ -19,13 +19,12 @@ Rails.application.routes.draw do
     resources :expenses, except: %i[show index]
 
     resources :parent_folder, only: %i[] do
-      resources :folders, only: %i[show create destroy]
+      resources :folders, only: %i[create]
     end
 
-    resources :photos, only: %i[destroy]
-
-    resources :folders, only: %i[index] do
+    resources :folders, only: %i[index show destroy] do
       resources :photos, only: %i[new create]
+      resources :selected_photos, only: %i[create]
     end
 
     resources :quick_actions, param: :code, only: %i[] do

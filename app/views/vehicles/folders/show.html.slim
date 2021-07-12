@@ -8,47 +8,52 @@ nav aria-label="breadcrumb"
         - else
           = link_to breadcrumb[:name], breadcrumb[:path]
 
-.mb-2
-  - @page.child_folders.each do |child_folder|
-    = link_to child_folder[:path], class: "btn btn-dark btn-sm mx-1" do
-      i.fas.fa-folder.pr-2
-      = child_folder[:name]
+= form_tag vehicle_folder_selected_photos_path(@page.vehicle_id, @page.root_or_folder_id) do
+  .mb-2
+    - @page.child_folders.each do |child_folder|
+      = link_to child_folder[:path], class: "btn btn-dark btn-sm mx-1" do
+        i.fas.fa-folder.pr-2
+        = child_folder[:name]
 
-  .btn.btn-dark.btn-sm.mx-1 data-toggle="modal" data-target="#add-folder-modal"
-    i.fas.fa-folder-plus
+    .btn.btn-dark.btn-sm.mx-1 data-toggle="modal" data-target="#add-folder-modal"
+      i.fas.fa-folder-plus
 
-.row.mx-0
-  - @page.entity_photos.each do |entity_photo|
-    .col-6.col-md-4.col-lg-3.col-xl-2.px-0
-      .card.shadow.shown-hidden-trigger.cursor-pointer data-toggle="modal" data-target="#entity-photo-#{entity_photo.id}"
-        .position-absolute.right-7.top-7.opacity-8.shown-on-hover
-          = link_to vehicle_photo_path(@page.vehicle_id, entity_photo.id), method: :delete,
-                  class: "btn btn-danger btn-sm btn-circle", data: { confirm: "Are you sure?" } do
-            i.fas.fa-trash
-        = image_tag(entity_photo.photo.thumb.url, class: "card-img-top img-thumbnail")
+  .row.mx-0
+    - @page.entity_photos.each do |entity_photo|
+      .col-6.col-md-4.col-lg-3.col-xl-2.px-0
+        .card.shadow.cursor-pointer data-toggle="#{"modal" unless @page.edit?}" data-target="#entity-photo-#{entity_photo.id}"
+          = image_tag(entity_photo.photo.thumb.url, class: "card-img-top img-thumbnail #{"select-toggle-trigger" if @page.edit?}")
+          = hidden_field_tag "selected_photo_ids[]", entity_photo.id, id: "selected-photo-#{entity_photo.id}", disabled: true
 
-      .modal.fade id="entity-photo-#{entity_photo.id}" tabindex="-1" role="dialog" aria-labelledby="entity-photo-#{entity_photo.id}-title" aria-hidden="true"
-        .modal-dialog.modal-dialog-centered.modal-xl role="document"
-          .modal-content
-            .modal-body
-              img.d-block.w-100 src="#{entity_photo.photo.url}"
-              - if entity_photo.description.present?
-                p.text-center
-                  = entity_photo.description
+        .modal.fade id="entity-photo-#{entity_photo.id}" tabindex="-1" role="dialog" aria-labelledby="entity-photo-#{entity_photo.id}-title" aria-hidden="true"
+          .modal-dialog.modal-dialog-centered.modal-xl role="document"
+            .modal-content
+              .modal-body
+                img.d-block.w-100 src="#{entity_photo.photo.url}"
+                - if entity_photo.description.present?
+                  p.text-center
+                    = entity_photo.description
 
-  .col-6.col-md-4.col-lg-3.col-xl-2.px-0.d-flex data-toggle="modal" data-target="#upload-photos-modal"
-    .card.shadow.shown-hidden-trigger.cursor-pointer.h-100.w-100.min-height-100
-      .card-img-top.img-thumbnail.h-100.d-flex.justify-content-center.align-items-center
-        i.fas.fa-plus-circle.fa-3x.text-dark.rounded-circle.p-2
+    .col-6.col-md-4.col-lg-3.col-xl-2.px-0.d-flex data-toggle="modal" data-target="#upload-photos-modal"
+      .card.shadow.shown-hidden-trigger.cursor-pointer.h-100.w-100.min-height-100
+        .card-img-top.img-thumbnail.h-100.d-flex.justify-content-center.align-items-center
+          i.fas.fa-plus-circle.fa-3x.text-dark.rounded-circle.p-2
 
-- if @page.entity_photos.empty?
-  hr.mt-5
+  - if @page.entity_photos.empty?
+    hr.mt-5
 
-.d-flex.mt-2
-  - unless @page.root_folder?
-    = link_to "Delete \"#{@page.entity_name}\" folder", vehicle_parent_folder_folder_path(@page.vehicle_id, @page.parent_folder_id, @page.entity_id),
-            method: :delete, class: "btn btn-danger mr-2", data: { confirm: "Are you sure?" }
-  = link_to "Back", @page.back_path, class: "btn btn-outline-secondary"
+  .mt-2
+    - if @page.edit?
+      - unless @page.root_folder?
+        = link_to "Delete \"#{@page.entity_name}\" folder", vehicle_folder_path(@page.vehicle_id, @page.entity_id),
+                method: :delete, class: "btn btn-danger mr-2 mb-2", data: { confirm: "Are you sure?" }
+      = submit_tag "Rename Selected" , class: "btn btn-primary mr-2 mb-2", disabled: true
+      = submit_tag "Move Selected" , class: "btn btn-primary mr-2 mb-2", disabled: true
+      = submit_tag "Delete Selected" , class: "btn btn-danger mr-2 mb-2", data: { confirm: "Are you sure?" }
+      = link_to "Cancel", @page.folder_path, class: "btn btn-outline-secondary mb-2"
+    - else
+      = link_to "Edit", @page.edit_folder_path, class: "btn btn-primary mr-2 mb-2"
+      = link_to "Back", @page.back_path, class: "btn btn-outline-secondary mb-2"
 
 = simple_form_for ::Photo.new, url: vehicle_folder_photos_path(@page.vehicle_id, @page.root_or_folder_id), html: { multipart: true } do |f|
   .modal.fade id="upload-photos-modal" tabindex="-2" role="dialog" aria-hidden="true"
