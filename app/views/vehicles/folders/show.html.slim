@@ -32,6 +32,9 @@ nav aria-label="breadcrumb"
           .modal-content
             .modal-body
               img.d-block.w-100 src="#{entity_photo.photo.url}"
+              - if entity_photo.description.present?
+                p.text-center
+                  = entity_photo.description
 
   .col-6.col-md-4.col-lg-3.col-xl-2.px-0.d-flex data-toggle="modal" data-target="#upload-photos-modal"
     .card.shadow.shown-hidden-trigger.cursor-pointer.h-100.w-100.min-height-100
@@ -54,7 +57,13 @@ nav aria-label="breadcrumb"
         .modal-header
           h5.modal-title Upload photo(s)
         .modal-body
-          = f.file_field :photo, multiple: true
+          .form-group
+            .row
+              .col-12
+                = f.file_field :photo, multiple: true
+            .row
+              .col-12.mt-4
+                = f.input :description, class: "form-control"
         .modal-footer
           = f.button :submit, "Upload", class: "btn btn-primary"
           button.btn.btn-secondary type="button" data-dismiss="modal" Close

@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_04_003736) do
+ActiveRecord::Schema.define(version: 2021_07_12_132740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "attachments", force: :cascade do |t|
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.string "file"
+    t.string "content_type"
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["owner_type", "owner_id"], name: "index_attachments_on_owner"
+  end
 
   create_table "copart_lots", force: :cascade do |t|
     t.string "lot_number"
@@ -90,6 +102,7 @@ ActiveRecord::Schema.define(version: 2021_07_04_003736) do
     t.string "photo"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "description"
     t.index ["owner_type", "owner_id"], name: "index_photos_on_owner_type_and_owner_id"
   end
 

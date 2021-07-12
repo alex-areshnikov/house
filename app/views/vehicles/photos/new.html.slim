@@ -4,7 +4,13 @@ h3 #{@page.vehicle_name} - Upload photo(s)
   = f.error_notification
 
   .form-group
-    = f.file_field :photo, multiple: true
+    .row
+      .col-12.col-lg-6
+        = f.file_field :photo, multiple: true
+    .row
+      .col-12.col-lg-6.mt-4
+        =f.input :description, class: "form-control"
+
 
   = f.button :submit, "Upload", class: "btn btn-primary"
   = link_to "Back", vehicle_quick_action_folders_selector_path(@page.vehicle_id, :upload_photo), class: "btn btn-outline-secondary ml-2"

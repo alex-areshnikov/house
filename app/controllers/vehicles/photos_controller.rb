@@ -8,11 +8,11 @@ module Vehicles
     end
 
     def create
-      if photo_params.empty?
+      if photo_params[:photo].blank?
         flash[:alert] = "Please select at least 1 photo"
         redirect_back(fallback_location: vehicle_folders_path(params[:vehicle_id]))
       else
-        ::Datastorage::Creators::VehiclePhotos.new(params[:vehicle_id], params[:folder_id], photo_params[:photo]).create
+        ::Datastorage::Creators::VehiclePhotos.new(params[:vehicle_id], params[:folder_id], photo_params[:photo], photo_params[:description]).create
 
         page = Vehicles::FoldersPage.new(params[:vehicle_id], nil, params[:folder_id])
         page.calc_parent_folder_id!
@@ -30,7 +30,7 @@ module Vehicles
     private
 
     def photo_params
-      params.fetch(:photo, {}) .permit(photo: [])
+      params.fetch(:photo, {}) .permit(:description, photo: [])
     end
   end
 end
